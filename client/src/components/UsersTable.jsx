@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import adminService from '../services/adminService';
 import userService from '../services/userService';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const UsersTable = () => {
 	const [users, setUsers] = useState([]);
+
 	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const fetchAllUsers = async () => {
@@ -14,10 +17,7 @@ const UsersTable = () => {
 				const fetchedUsers = await userService.getAllUsers();
 				setUsers(fetchedUsers);
 			} catch (err) {
-				toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to fetch all users'
-				);
+				handleError(err, 'fetch all users infos');
 			}
 		};
 
@@ -35,10 +35,7 @@ const UsersTable = () => {
 
 			setUsers(updatedUserState);
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An unexpected error hs occured while trying to give/revoke admin status'
-			);
+			handleError(err, 'toggle admin status of a user');
 		}
 	};
 
@@ -52,17 +49,13 @@ const UsersTable = () => {
 
 			setUsers(updatedUsers);
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An unexpected error hs occured while trying to delete user'
-			);
+			handleError(err, 'delete a user from database');
 		}
 	};
 
 	const editUser = id => navigate(`/edit-user/${id}`);
 
 	// TODO make user search functionality
-	console.log(users);
 
 	return (
 		<table className='w-[95%] mx-auto table-auto text-sm text-center'>

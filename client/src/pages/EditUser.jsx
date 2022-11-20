@@ -7,19 +7,18 @@ import userService from '../services/userService';
 import { userActions } from '../store/store';
 import { validatePassword, validateUserUpdate } from '../validation/users';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const EditUser = ({ isAccountUpdate }) => {
 	const [userInfo, setUserInfo] = useState(null);
+
+	const { name, email } = useSelector(state => state.user);
 	const { id } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	const { name, email } = useSelector(state => state.user);
-
-	console.log(userInfo);
+	const handleError = useHandleError();
 
 	useEffect(() => {
-		console.log('use effect', isAccountUpdate);
 		const fetchUserInfo = async () => {
 			try {
 				const fetchedUser = await adminService.getUserById(id);
@@ -30,10 +29,7 @@ const EditUser = ({ isAccountUpdate }) => {
 					password: '',
 				});
 			} catch (err) {
-				return toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to fetch user data, please refresh and try again'
-				);
+				handleError(err, 'fetch user info');
 			}
 		};
 
@@ -67,23 +63,17 @@ const EditUser = ({ isAccountUpdate }) => {
 
 				return navigate('/account');
 			} catch (err) {
-				return toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to update user account info, please refresh and try again'
-				);
+				handleError(err, 'update user info');
 			}
 		}
 
 		try {
 			const user = await adminService.updateUser(userUpdate, id);
-			if (!user) throw new Error('No user with provided id was found');
+			if (!user) return toast.error('No user with provided was found');
 
 			return navigate('/admin');
 		} catch (err) {
-			return toast.error(
-				err.message ||
-					'An unexpected error has occured while updating user account info, please refresh and try again'
-			);
+			handleError(err, 'update user info');
 		}
 	};
 

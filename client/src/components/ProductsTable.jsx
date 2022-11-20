@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import productService from '../services/productService';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const ProductsTable = () => {
 	const [products, setProducts] = useState([]);
-	const navigate = useNavigate();
 
-	console.log(products);
+	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const getData = async () => {
@@ -15,10 +16,7 @@ const ProductsTable = () => {
 				const fetchedUsers = await productService.getAllProducts();
 				setProducts(fetchedUsers);
 			} catch (err) {
-				toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to fetch all products'
-				);
+				handleError(err, 'fetch all products');
 			}
 		};
 
@@ -32,7 +30,6 @@ const ProductsTable = () => {
 	const onDeleteProduct = async id => {
 		try {
 			const deletedProduct = await productService.deleteProduct(id);
-			console.log(deletedProduct);
 
 			const indexOfProductInProductsState = products.findIndex(
 				p => p._id === id
@@ -42,10 +39,7 @@ const ProductsTable = () => {
 
 			setProducts(updatedProductsState);
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An unexpected error has occured while trying to delete the product from the database'
-			);
+			handleError(err, 'delete product from database');
 		}
 	};
 

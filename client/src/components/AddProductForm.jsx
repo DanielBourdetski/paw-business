@@ -5,6 +5,7 @@ import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import Input from './common/Input';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const initialFormState = {
 	name: '',
@@ -17,9 +18,11 @@ const initialFormState = {
 
 const AddProductForm = () => {
 	const [formData, setFormState] = useState(initialFormState);
+	const [errors, setErrors] = useState({});
 	const [allowedAnimals, setAllowedAnimals] = useState([]);
 
 	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const getAllowedAnimals = async () => {
@@ -28,7 +31,7 @@ const AddProductForm = () => {
 				setAllowedAnimals(res.data);
 				setFormState({ ...formData, animal: res.data[0] });
 			} catch (err) {
-				console.log(err);
+				handleError(err, 'fetch animals list');
 			}
 		};
 
@@ -48,18 +51,23 @@ const AddProductForm = () => {
 		productData.tags = formData.tags.replaceAll(' ', '').split(',');
 
 		const { error } = validateProduct(productData);
+		if (error) {
+			const currentErrors = {};
 
-		// TODO handle invalid value
-		if (error || !allowedAnimals.includes(productData.animal))
-			return toast.info(`Invalid field: ${error.details[0].message}`);
+			error.details.forEach((err, i) => {
+				currentErrors[err.context.label] = err.message;
+				setTimeout(() => toast.info(err.message), i * 80);
+			});
+
+			return setErrors(currentErrors);
+		}
 
 		try {
 			const res = await productService.addProduct(productData);
 			console.log(res);
 			navigate('/products');
 		} catch (err) {
-			// TODO handle errors
-			console.log(err);
+			handleError(err, 'add product to database');
 		}
 	};
 
@@ -74,26 +82,31 @@ const AddProductForm = () => {
 				value={formData.name}
 				label='Product name'
 				onChange={e => onChange(e, 'name')}
+				invalidMessage={errors?.name}
 			/>
 			<Input
 				value={formData.description}
 				label='Description'
 				onChange={e => onChange(e, 'description')}
+				invalidMessage={errors?.description}
 			/>
 			<Input
 				value={formData.price}
 				label='Price'
 				onChange={e => onChange(e, 'price')}
+				invalidMessage={errors?.price}
 			/>
 			<Input
 				value={formData.image}
 				label='Image URL'
 				onChange={e => onChange(e, 'image')}
+				invalidMessage={errors?.image}
 			/>
 			<Input
 				value={formData.tags}
 				label='Tags (seperated by commas)'
 				onChange={e => onChange(e, 'tags')}
+				invalidMessage={errors?.tags}
 			/>
 
 			<select

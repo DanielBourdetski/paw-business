@@ -67,7 +67,7 @@ const validatePassword = password => {
     password: joi.string().min(8).max(1024).pattern(passwordRegex).required(),
   })
 
-  return schema.validate(password)
+  return schema.validate({password})
 }
 
 exports.User = User;

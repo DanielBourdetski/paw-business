@@ -3,36 +3,41 @@ import ProductForm from '../components/ProductForm';
 import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import useHandleError from '../hooks/useHandleError';
 
 const AddProduct = () => {
+	const [errors, setErrors] = useState({});
 	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	const onSubmit = async formState => {
-		// validate that all fields are filled
-		if (Object.keys(formState).some(k => !formState[k])) {
-			// TODO handle empty values
-			return console.log('All fields are required');
-		}
-
 		const productData = { ...formState };
-		productData.tags = formState.tags.replaceAll(' ', '').split(',');
+		productData.tags = formState.tags?.replaceAll(' ', '').split(',');
 
 		const { error } = validateProduct(productData);
-		if (error) return toast.info(error?.details[0]?.message);
+		if (error) {
+			const newErrors = {};
+
+			error.details.forEach((err, i) => {
+				newErrors[err.path[0]] = err.message;
+				setTimeout(() => toast.info(err.message), 80 * i);
+			});
+
+			return setErrors(newErrors);
+		}
 
 		try {
-			const res = await productService.addProduct(productData);
-			console.log(res);
+			await productService.addProduct(productData);
 			navigate('/products');
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An unexpected error has occured while trying to add the product'
-			);
+			handleError(err, 'create a new product');
 		}
 	};
 
-	return <ProductForm onSubmit={onSubmit} title='Add Product' />;
+	return (
+		<ProductForm onSubmit={onSubmit} title='Add Product' errors={errors} />
+	);
 };
 
 export default AddProduct;

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import productService from '../services/productService';
 import Input from './common/Input';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const initialFormState = {
 	name: '',
@@ -12,8 +13,10 @@ const initialFormState = {
 	animal: '',
 };
 
-const ProductForm = ({ defaultState, onSubmit, title }) => {
+const ProductForm = ({ defaultState, onSubmit, title, errors }) => {
 	const [formState, setFormState] = useState(initialFormState);
+
+	const handleError = useHandleError();
 	const [allowedAnimals, setAllowedAnimals] = useState([]);
 
 	useEffect(() => {
@@ -24,10 +27,7 @@ const ProductForm = ({ defaultState, onSubmit, title }) => {
 				setAllowedAnimals(res.data);
 				setFormState({ ...defaultState, animal: res.data[0] });
 			} catch (err) {
-				toast.error(
-					err.message ||
-						'An unexpected error has occured while getting the list of the allowed animals'
-				);
+				handleError(err, 'fetch animals list');
 			}
 		};
 
@@ -50,26 +50,31 @@ const ProductForm = ({ defaultState, onSubmit, title }) => {
 				value={formState.name}
 				label='Product name'
 				onChange={e => onChange(e, 'name')}
+				invalidMessage={errors.name}
 			/>
 			<Input
 				value={formState.description}
 				label='Description'
 				onChange={e => onChange(e, 'description')}
+				invalidMessage={errors.description}
 			/>
 			<Input
 				value={formState.price}
 				label='Price'
 				onChange={e => onChange(e, 'price')}
+				invalidMessage={errors.price}
 			/>
 			<Input
 				value={formState.image}
 				label='Image URL'
 				onChange={e => onChange(e, 'image')}
+				invalidMessage={errors.image}
 			/>
 			<Input
 				value={formState.tags}
 				label='Tags (seperated by commas)'
 				onChange={e => onChange(e, 'tags')}
+				invalidMessage={errors.tags}
 			/>
 
 			<select

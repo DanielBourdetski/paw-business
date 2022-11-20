@@ -4,13 +4,15 @@ import ProductList from '../components/common/ProductList';
 import productService from '../services/productService';
 import { toast } from 'react-toastify';
 import SearchBar from '../components/SearchBar';
+import useHandleError from '../hooks/useHandleError';
 
 const Products = () => {
 	const [products, setProducts] = useState({});
 	const [loading, setLoading] = useState(true);
 
-	const navigate = useNavigate();
 	const { search: keywords } = useParams();
+	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const fetchProducts = async () => {
@@ -21,10 +23,7 @@ const Products = () => {
 
 				setProducts(fetchedProducts);
 			} catch (err) {
-				toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to fetch products'
-				);
+				handleError(err, 'fetch products');
 			} finally {
 				setLoading(false);
 			}

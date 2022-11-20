@@ -105,7 +105,7 @@ router.get('/search/:keyWords', auth, async (req, res) => {
     const results = await Product.find({$or: [{tags: {$in: keyWords}}, {name: {$regex: regexKeyWords}}, {description: {$regex: regexKeyWords}}]})
     res.send(results)
   } catch (err) {
-    console.log(err);
+    res.status(500).send('unexpected error:' + err.message);
   }
 })
 
@@ -151,7 +151,7 @@ router.put('/:id', auth, async (req, res) => {
   }
 })
 
-router.get('/allowed-animals', authAdmin, async (req, res) => {
+router.get('/allowed-animals', auth, async (req, res) => {
   res.send(allowedAnimals);
 })
 

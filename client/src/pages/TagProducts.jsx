@@ -3,10 +3,13 @@ import { useParams } from 'react-router-dom';
 import ProductList from '../components/common/ProductList';
 import { getProuctsByTag } from '../services/productService';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const TagProducts = () => {
 	const [products, setProducts] = useState([]);
+
 	const { tag = false } = useParams();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const getProducts = async () => {
@@ -14,7 +17,7 @@ const TagProducts = () => {
 				const fetchedProducts = await getProuctsByTag(tag);
 				setProducts(fetchedProducts);
 			} catch (err) {
-				return toast.error(err);
+				return handleError(err, 'fetch products');
 			}
 		};
 

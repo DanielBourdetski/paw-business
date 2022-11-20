@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import CartAndFavs from '../components/CartAndFavs';
-import ProductCard from '../components/common/ProductCard';
 
 import productService from '../services/productService';
 import userService from '../services/userService';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const Account = () => {
 	const [loading, setLoading] = useState(2);
-	const [cart, setCart] = useState([]);
-	const [favourites, setFavourites] = useState([]);
 	const [accountInfo, setAccountInfo] = useState({});
 
-	const user = useSelector(state => state.user);
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const getAccountInfo = async () => {
@@ -22,36 +20,11 @@ const Account = () => {
 				setAccountInfo(fetchedInfo);
 				setLoading(updatedLoading => updatedLoading - 1);
 			} catch (err) {
-				toast.error(
-					err.message ||
-						'An unexpected error has occured while trying to get account info'
-				);
-			}
-		};
-
-		const getProductInfos = async () => {
-			try {
-				const cartIds = user.cart.map(p => p.product);
-				const fetchedCartInfos = await productService.getMultipleProductsInfo(
-					cartIds
-				);
-
-				const fetchedFavouritesInfos =
-					await productService.getMultipleProductsInfo(user.favourites);
-
-				setCart(fetchedCartInfos);
-				setFavourites(fetchedFavouritesInfos);
-			} catch (err) {
-				toast.error(
-					err.message ||
-						"An unexpected error has occured while trying to get product's information"
-				);
+				handleError(err);
 			} finally {
-				setLoading(updatedLoading => updatedLoading - 1);
+				setLoading(false);
 			}
 		};
-
-		getProductInfos();
 		getAccountInfo();
 	}, []);
 

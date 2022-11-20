@@ -3,10 +3,13 @@ import { useSelector } from 'react-redux';
 import productService from '../services/productService';
 import ProductList from './common/ProductList';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const CartAndFavs = () => {
 	const [lists, setLists] = useState({ cart: null, favourites: null });
 	const [loading, setLoading] = useState(true);
+
+	const handleError = useHandleError();
 
 	const { cart: cartIds = [], favourites: favsIds = [] } = useSelector(
 		state => state.user
@@ -25,7 +28,7 @@ const CartAndFavs = () => {
 				setLists({ cart, favourites });
 				setLoading(false);
 			} catch (err) {
-				return toast.error(err.message || 'An unexpected error has occured');
+				return handleError(err, 'fetch favorites and cart');
 			}
 		};
 
@@ -36,7 +39,7 @@ const CartAndFavs = () => {
 
 	return (
 		<div>
-			{lists.cart && (
+			{!!lists.cart.length && (
 				<>
 					<h2>My Cart</h2>
 					<ProductList products={lists.cart} />{' '}

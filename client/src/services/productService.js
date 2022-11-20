@@ -29,8 +29,11 @@ export const getProuctsByTag = async tag => {
 };
 
 export const getMultipleProductsInfo = async ids => {
+  if (ids?.length === 0) return []
+  
   const idsObj = {};
   ids.forEach((id, i) => idsObj[i] = id)
+
   const res = await http.get('/products/multiple-info', {params: idsObj});
   return res.data;
 }

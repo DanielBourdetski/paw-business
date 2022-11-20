@@ -15,12 +15,12 @@ router.post('/', async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
 
   let user = await User.findOne({ email: { '$regex': req.body.email, $options: 'i' } });
-  if (user) return res.status(400).send('User already exists');
+  if (user) return res.status(403).send('User already exists');
 
   user = new User(req.body);
 
-  const hashed = await bcrypt.hash(user.password, 10);
-  user.password = hashed;
+  const hashedPassword = await bcrypt.hash(user.password, 10);
+  user.password = hashedPassword;
   
   await user.save();
 
@@ -33,10 +33,10 @@ router.post('/', async (req, res) => {
 router.post('/add-to-cart', auth, async (req, res) => {
   try {
     const amountToAdd = req.body.amount || 1;
-    if (!req.body.product) return res.status(400).send('product id have not been provided');
+    if (!req.body.product) return res.status(400).send('Product id has not been provided');
 
     const { _id: productIdToAdd } = await Product.exists({ _id: req.body.product });
-    if (!productIdToAdd.toString()) return res.status(404).send('invalid id');
+    if (!productIdToAdd.toString()) return res.status(404).send('Invalid id');
 
     const { user } = req;
     const indexOfProductInCart = user.cart.findIndex(p => p.product.toString() === productIdToAdd.toString());
@@ -52,9 +52,9 @@ router.post('/add-to-cart', auth, async (req, res) => {
 
     res.send(user.cart);
   } catch (err) {
-    if (err.patch === '_id') return res.status(400).send('invalid id');
+    if (err.patch === '_id') return res.status(400).send('Invalid id');
 
-    res.status(500).send('unexpeced error');
+    res.status(500).send('Unexpeced error has occured:', err.message);
   }
 })
 
@@ -62,12 +62,12 @@ router.put('/add-or-reduce-in-cart/:action/:id', auth, async (req, res) => {
   try {
     const { _id: productIdToReduce } = await Product.exists({ _id: req.params.id });
     
-    if (!productIdToReduce.toString()) return res.status(404).send('invalid product id');
+    if (!productIdToReduce.toString()) return res.status(404).send('Invalid product id');
   
     const { user } = req;
   
     const indexOfProdcutInCart = user.cart.findIndex(p => p.product.toString() === productIdToReduce.toString());
-    if (indexOfProdcutInCart === -1) return res.status(404).send('product not in cart');
+    if (indexOfProdcutInCart === -1) return res.status(404).send('Product not in cart');
 
     const action = req.params.action;
 
@@ -85,22 +85,22 @@ router.put('/add-or-reduce-in-cart/:action/:id', auth, async (req, res) => {
   
     res.send(user.cart[indexOfProdcutInCart]);
   } catch (err) {
-    if (err.patch === '_id') return res.status(400).send('invalid id');
+    if (err.patch === '_id') return res.status(400).send('Invalid id');
 
     console.log(err);
-    res.status(500).send('unexpeced error');
+    res.status(500).send('Unexpeced error');
   }
 })
 
 router.put('/reduce-from-cart', auth, async (req, res) => {
   try {
     const { _id: productIdToReduce } = await Product.exists({ _id: req.body.product });
-    if (!productIdToReduce.toString()) return res.status(404).send('invalid product id');
+    if (!productIdToReduce.toString()) return res.status(404).send('Invalid product id');
   
     const { user } = req;
   
     const indexOfProdcutInCart = user.cart.findIndex(p => p.product.toString() === productIdToReduce.toString());
-    if (indexOfProdcutInCart === -1) return res.status(404).send('product not in cart');
+    if (indexOfProdcutInCart === -1) return res.status(404).send('Product not in cart');
   
     user.cart[indexOfProdcutInCart].amount === 1
       ? user.cart.splice(indexOfProdcutInCart, 1)
@@ -110,9 +110,9 @@ router.put('/reduce-from-cart', auth, async (req, res) => {
   
     res.send(user);
   } catch (err) {
-    if (err.patch === '_id') return res.status(400).send('invalid id');
+    if (err.patch === '_id') return res.status(400).send('Invalid id');
 
-    res.status(500).send('unexpeced error');
+    res.status(500).send('Unexpeced error has occured:', err.message);
   }
 })
 

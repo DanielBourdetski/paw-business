@@ -2,22 +2,23 @@ import { useDispatch, useSelector } from 'react-redux';
 import userService from '../../services/userService';
 import { toast } from 'react-toastify';
 import { userActions } from '../../store/store';
+import useHandleError from '../../hooks/useHandleError';
 
-const ProductCard = ({ className = '', info, inCart }) => {
-	const { favorites = [] } = useSelector(state => state.user);
-
+const ProductCard = ({ className = '', info, inCart, favorite }) => {
 	const dispatch = useDispatch();
+	const handleError = useHandleError();
 
 	const onAddToCart = async id => {
 		try {
 			const updatedCart = await userService.addToCart(id);
 
 			dispatch(userActions.updateCart(updatedCart));
+			toast.success('Product added to cart', {
+				autoClose: 1000,
+				hideProgressBar: true,
+			});
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An unexpected error has occured, please refresh and try again.'
-			);
+			handleError(err, 'add product to cart');
 		}
 	};
 
@@ -30,10 +31,7 @@ const ProductCard = ({ className = '', info, inCart }) => {
 				updatedFavorites.includes(id)
 					? 'Added to favorites!'
 					: 'Removed from favorites!',
-				{
-					autoClose: 1000,
-					hideProgressBar: true,
-				}
+				{ autoClose: 1000, hideProgressBar: true }
 			);
 		} catch (err) {
 			// TODO handle error
@@ -41,7 +39,6 @@ const ProductCard = ({ className = '', info, inCart }) => {
 		}
 	};
 
-	const isProductInFavorites = favorites.includes(info._id);
 	return (
 		<li
 			className={`flex flex-col border border-gray-400 m-4 rounded items-start ${className}`}>
@@ -73,7 +70,7 @@ const ProductCard = ({ className = '', info, inCart }) => {
 					// ! doesnt work
 					onClick={() => onAddToFavorites(info._id)}
 					className={`border border-gray-400 hover:border-gray-600 hover:bg-slate-200 duration-150 m-1 p-1 rounded ${
-						isProductInFavorites && 'bg-slate-300'
+						favorite && 'bg-slate-300'
 					}`}>
 					{'<3'}
 				</button>

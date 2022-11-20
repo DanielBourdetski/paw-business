@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const ProtectedRoute = ({ children }, adminOnly = false) => {
+const ProtectedRoute = ({ children = false, adminOnly = false }) => {
 	const navigate = useNavigate();
 	const user = useSelector(state => state.user);
 

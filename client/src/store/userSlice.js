@@ -7,9 +7,9 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     saveUser: (state, action) => {
-      const { name, email, cart, favourites, isAdmin } = action.payload;
+      const { name, email, cart, favorites, isAdmin } = action.payload;
 
-      state = { name, email, cart, favourites, isAdmin };
+      state = { name, email, cart, favorites, isAdmin };
       state.token = action.payload.token;
 
       return state

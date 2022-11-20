@@ -17,7 +17,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 5,
-    maxlength: 50,
+    maxlength: 120,
   },
   price: {
     type: Number,
@@ -52,7 +52,7 @@ const Product = mongoose.model('Product', productSchema);
 const validateProduct = product => {
   const schema = joi.object({
     name: joi.string().min(2).max(30).required(),
-    description: joi.string().min(5).max(50).required(),
+    description: joi.string().min(5).max(120).required(),
     price: joi.number().required(),
     image: joi.string().required(),
     _sold: joi.number().default(0),

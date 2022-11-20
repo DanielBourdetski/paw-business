@@ -5,8 +5,6 @@ const SearchBar = () => {
 	const [searchWords, setSearchWords] = useState('');
 	const navigate = useNavigate();
 
-	console.log('something');
-
 	const onSearch = e => {
 		e.preventDefault();
 		navigate('/products/' + searchWords);

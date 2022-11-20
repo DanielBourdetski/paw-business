@@ -5,6 +5,7 @@ import ProductForm from '../components/ProductForm';
 import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
 
 const initialProductState = {
 	name: '',
@@ -17,8 +18,10 @@ const initialProductState = {
 
 const EditProduct = () => {
 	const [productInfo, setProductInfo] = useState(initialProductState);
+
 	const { id } = useParams();
 	const navigate = useNavigate();
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		if (!id) {
@@ -41,10 +44,7 @@ const EditProduct = () => {
 					animal,
 				});
 			} catch (err) {
-				return toast.error(
-					err.message ||
-						'An unexpected error has occured while fetching product info, please refresh and try again'
-				);
+				return handleError(err, 'get product info');
 			}
 		};
 
@@ -69,11 +69,7 @@ const EditProduct = () => {
 			const res = await productService.updateProduct(productData, id);
 			navigate('/admin');
 		} catch (err) {
-			// TODO handle errors
-			return toast.error(
-				err.message ||
-					'An unexpected error has occured while trying to update the product in the database, please refresh and try again'
-			);
+			handleError(err, "update a product's info");
 		}
 	};
 

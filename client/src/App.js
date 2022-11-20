@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -12,15 +12,29 @@ import Header from './components/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from './store/store';
+import useHandleError from './hooks/useHandleError';
 
 function App() {
   const [loading, setLoading] = useState(true)  
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [routes, setRoutes] = useState([])
   
   const user = useSelector(state => state.user)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const handleError = useHandleError();
 
   useEffect(() => {
+    const routesArr = routesConfig.map((r, i) => {
+      if (r.protected) return <Route key={i} path={r.path} element={<ProtectedRoute adminOnly={r.admin}>{r.element}</ProtectedRoute>} />
+      
+      return <Route key={i} path={r.path} element={r.element} />
+    });
+    
+    setRoutes(routesArr);
+
+    if (/forgot-password.*/.test(location.pathname)) return setLoading(false);
+
     const token = userService.getToken();
     if (!token) {
       setLoading(false);
@@ -31,28 +45,21 @@ function App() {
 
     const getAccountInfo = async () => {
       try {
-        const {name, email, cart, favourites, isAdmin} = await userService.getAccountInfo();
-        const fetchedUser = { name, email, cart, favourites, token, isAdmin };
+        const {name, email, cart, favorites, isAdmin} = await userService.getAccountInfo();
+        const fetchedUser = { name, email, cart, favorites, token, isAdmin };
 
         dispatch(userActions.saveUser(fetchedUser));
       } 
-        catch (err) {
-        console.log(err);
+      catch (err) {
+        handleError(err, 'get account info')
       } 
-        finally {
+      finally {
         setLoading(false);
-      }
     }
+  }
 
-    getAccountInfo();
+  getAccountInfo();
   }, [])
-
-  const routes = routesConfig.map((r, i) => {
-    if (r.protected) return <Route key={i} path={r.path} element={<ProtectedRoute adminOnly={r.admin}>{r.element}</ProtectedRoute>} />
-    
-    return <Route key={i} path={r.path} element={r.element} />
-  });
-
 
   if (loading) return <p>LOADING</p>
 

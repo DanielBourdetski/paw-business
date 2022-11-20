@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import ProductCard from './ProductCard';
 
 const ProductList = ({ products, title = '', className }) => {
-	const cart = useSelector(state => state.user.cart);
-	const ids = cart.map(p => p.product);
+	const { cart, favorites = [] } = useSelector(state => state.user);
+	const cartIds = cart.map(p => p.product);
 
 	const capitalizedTitle =
 		title.slice(0, 1).toUpperCase() + title.slice(1).toLowerCase();
@@ -18,7 +18,8 @@ const ProductList = ({ products, title = '', className }) => {
 						key={p._id}
 						info={p}
 						className=''
-						inCart={ids.includes(p._id)}
+						inCart={cartIds.includes(p._id)}
+						favorite={favorites.includes(p._id)}
 					/>
 				))}
 			</ul>

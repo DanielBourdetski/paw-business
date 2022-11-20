@@ -7,16 +7,17 @@ import AddProduct from "../pages/AddProduct";
 import Admin from "../pages/Admin";
 import EditUser from "../pages/EditUser";
 import EditProduct from "../pages/EditProduct";
-import CartList from "../pages/Cart";
 import Cart from "../pages/Cart";
+import ForgotPassword from "../pages/ForgotPassword";
 
 /**
  * navable: adds a link in the navbar
+ * name: link name in navbar
  * protected: only registered users can access
  * admin: only admins can access
  */
 
-export default [
+const routes = [
   {
     path: '/',
     name: 'Home',
@@ -49,7 +50,6 @@ export default [
     name: 'Products',
     element: <Products />,
     protected: true,
-    navable: true,
   },
   {
     path: '/account',
@@ -96,4 +96,10 @@ export default [
     navable: true,
     admin: true,
   },
+  {
+    path: '/forgot-password/*',
+    element: <ForgotPassword />,
+  },
 ]
+
+export default routes

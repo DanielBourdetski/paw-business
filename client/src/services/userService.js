@@ -6,7 +6,6 @@ export const getAllUsers = async () => {
 }
 
 export const login = async data => {
-  try {
     const res = await http.post('auth', data);
 
     const { name, email, cart, favorites, token } = res.data;
@@ -14,14 +13,9 @@ export const login = async data => {
     
     http.setJwt(token);
     return user
-  } catch (err) {
-    // TODO handle error
-    console.log(err);
-  }
 }
 
 export const signup = async data => {
-  try {
     const res = await http.post('users', data)
 
     const { name, email, cart, token } = res.data;
@@ -29,10 +23,6 @@ export const signup = async data => {
 
     http.setJwt(token);
     return user;
-  } catch (err) {
-    // TODO handle error
-    console.log(err);
-  }
 }
 
 export const signout = () => localStorage.removeItem('token');
@@ -45,18 +35,11 @@ export const saveToken = token => {
 export const getToken = () => localStorage.getItem('token');
 
 export const getAccountInfo = async () => {
-  try {
     const res = await http.get('/users/account-info');
-    return res.data
-  } catch (err) {
-    // TODO handle error
-    console.log(err);
-  }
+    return res.data;
 }
 
-// TODO test this
 export const toggleFavorite = async id => {
-  console.log(id);
   const res = await http.post(`/users/toggle-favorite/${id}`);
   return res.data;
 }
@@ -71,7 +54,6 @@ export const addOrReduceInCart = async (action, id) => {
   return res.data;
 }
 
-// TODO test this
 export const removeFromCart = async id => {
   const res = await http.delete(`/users/remove-from-cart/${id}`);
   return res.data;
@@ -79,6 +61,21 @@ export const removeFromCart = async id => {
 
 export const updateAccountInfo = async user => {
   const res = await http.put('/users/update-account', user);
+  return res.data;
+}
+
+export const confirmResetToken = async token => {
+  const res = await http.get(`/auth/confirm-reset-token/${token}`)
+  return res.data;
+}
+
+export const sendRestLink = async email => {
+  const res = await http.post('/auth/request-password-reset-link', {email})
+  return res.data;
+}
+
+export const resetPassword = async (password, token) => {
+  const res = await http.patch('/auth/password', { password, token });
   return res.data;
 }
 
@@ -94,7 +91,10 @@ const userService = {
   addToCart,
   toggleFavorite,
   addOrReduceInCart,
-  removeFromCart
+  removeFromCart,
+  confirmResetToken,
+  sendRestLink,
+  resetPassword
 }
 
 export default userService

@@ -2,7 +2,6 @@ import { NavLink } from 'react-router-dom';
 import routes from '../config/routes';
 
 const Nav = ({ userIsAdmin }) => {
-	console.log('userIsAdmin', userIsAdmin);
 	const navlinks = routes.map(r => {
 		if (!r.navable) return null;
 		if (r.admin && !userIsAdmin) return null;

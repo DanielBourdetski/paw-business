@@ -4,6 +4,7 @@ import productService from '../services/productService';
 import { toast } from 'react-toastify';
 import userService from '../services/userService';
 import { userActions } from '../store/store';
+import useHandleError from '../hooks/useHandleError';
 
 const CartProductCard = ({
 	info: { name, description, image, price, animal, tags, amount, _id },
@@ -11,39 +12,43 @@ const CartProductCard = ({
 	cart,
 }) => {
 	const dispatch = useDispatch();
+	const handleError = useHandleError();
 
 	const handleAmountChange = async e => {
 		const isAdding = e.target.textContent === '+';
 
 		let product;
 
-		if (isAdding) {
-			product = await userService.addOrReduceInCart('add', _id);
+		try {
+			if (isAdding) {
+				product = await userService.addOrReduceInCart('add', _id);
+			}
+
+			if (!isAdding) {
+				product = await userService.addOrReduceInCart('reduce', _id);
+			}
+
+			const updatedProducts = [...cart];
+			updatedProducts[index] = product;
+
+			dispatch(userActions.updateCart(updatedProducts));
+		} catch (err) {
+			handleError(
+				err,
+				isAdding ? 'add a product to cart' : "reduce a product's amount in cart"
+			);
 		}
-
-		if (!isAdding) {
-			product = await userService.addOrReduceInCart('reduce', _id);
-		}
-
-		const updatedProducts = [...cart];
-		updatedProducts[index] = product;
-
-		dispatch(userActions.updateCart(updatedProducts));
 	};
 
 	const onProductRemove = async () => {
 		try {
 			const deletedProduct = await userService.removeFromCart(_id);
-			console.log(deletedProduct);
 
 			const updatedCart = [...cart];
 			updatedCart.splice(index, 1);
 			dispatch(userActions.updateCart(updatedCart));
 		} catch (err) {
-			toast.error(
-				err.message ||
-					'An error has occured while trying to remove the selected product from the cart'
-			);
+			handleError(err, 'remove a product from cart');
 		}
 	};
 
@@ -77,6 +82,7 @@ const CartProductCard = ({
 
 const CartList = ({ cart }) => {
 	const [products, setProducts] = useState([]);
+	const handleError = useHandleError();
 
 	useEffect(() => {
 		const fetchFullInfo = async () => {
@@ -99,7 +105,7 @@ const CartList = ({ cart }) => {
 
 				setProducts(fullCartInfo);
 			} catch (err) {
-				toast.error(err.message || err);
+				handleError(err, 'get info about products in cart');
 			}
 		};
 
