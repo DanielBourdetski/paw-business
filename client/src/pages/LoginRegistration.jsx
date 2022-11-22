@@ -51,7 +51,7 @@ const LoginRegistration = () => {
 
 		try {
 			const user = await userService.login(loginData);
-			if (!user) throw new Error('Invalid credentials');
+			console.log(user);
 			userService.saveToken(user.token);
 
 			dispatch(userActions.saveUser(user));

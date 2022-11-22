@@ -18,9 +18,9 @@ router.post('/', async (req, res) => {
   const validPassword = await bcrypt.compare(req.body.password, user.password);
   if (!validPassword) return res.status(400).send('Invalid credentials');
 
-  const { name, email, cart, favourites } = user;
+  const { name, email, cart, favorites, isAdmin } = user;
 
-  res.json({ token: user.generateAuthToken(user._id), name, email, cart, favourites});
+  res.json({ token: user.generateAuthToken(user._id), name, email, cart, favorites, isAdmin});
 })
 
 router.post('/request-password-reset-link', async (req, res) => {
@@ -28,7 +28,7 @@ router.post('/request-password-reset-link', async (req, res) => {
   
   try {
     // ! NOTICE - for the purposes of this demo application, an email will be send to every email provided as a proof of concept,
-    // !          but will only work for registered users.
+    // !          but a rest link will be attached only for registered users.
     const user = await User.findOne({ email: { '$regex': email, $options: 'i' }});
     // ? vvv   this line should be uncommented on a real server   vvv
     // if (!user) return res.status(404).send('No user with matching email found');

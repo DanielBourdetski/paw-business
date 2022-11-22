@@ -8,8 +8,8 @@ export const getAllUsers = async () => {
 export const login = async data => {
     const res = await http.post('auth', data);
 
-    const { name, email, cart, favorites, token } = res.data;
-    const user = { name, email, cart, favorites, token };
+    const { name, email, cart, favorites, token, isAdmin } = res.data;
+    const user = { name, email, cart, favorites, token, isAdmin };
     
     http.setJwt(token);
     return user

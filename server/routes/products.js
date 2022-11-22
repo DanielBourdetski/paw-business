@@ -4,7 +4,7 @@ const router = express.Router();
 const _ = require('lodash');
 
 const { Product, validateProduct } = require('../models/products');
-const { auth, authAdmin } = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 const { allowedAnimals } = require('../config/config');
 
 const handleErrors = (err, res) => {
@@ -28,7 +28,6 @@ router.get('/popular', auth, async (_, res) => {
   
   try {
     
-    // searches for each of the tags individually, each query returns an object with the tag as a property.
     const getProductsByTagPromise = (tag) => {
       return new Promise(async (resolve, reject) => {
         const products = await Product.find({ tags: tag });
@@ -38,7 +37,7 @@ router.get('/popular', auth, async (_, res) => {
 
     const flattenArrayOfObjects = data => {
       let object = {};
-      data.forEach(d => object = {...object, ...d})
+      data.forEach(d => {object = {...object, ...d}})
       return object;
     }
     
@@ -69,8 +68,10 @@ router.post('/', auth, async (req, res) => {
     let product = await Product.findOne({ name: name })
     if (product) return res.status(400).send('Product name already exists');
 
+    const uniqueTags = Array.from(new Set(tags));
+
     product = new Product({
-      name, description, price, image, tags, animal
+      name, description, price, image, tags: uniqueTags, animal
     });
 
     post = await product.save();

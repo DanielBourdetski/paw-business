@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import productService from '../services/productService';
 import ProductList from './common/ProductList';
-import { toast } from 'react-toastify';
 import useHandleError from '../hooks/useHandleError';
 
 const CartAndFavs = () => {
@@ -11,9 +10,11 @@ const CartAndFavs = () => {
 
 	const handleError = useHandleError();
 
-	const { cart: cartIds = [], favourites: favsIds = [] } = useSelector(
+	const { cart: cartIds = [], favorites: favsIds = [] } = useSelector(
 		state => state.user
 	);
+
+	console.log(cartIds, favsIds);
 
 	useEffect(() => {
 		const fetchProducts = async () => {
