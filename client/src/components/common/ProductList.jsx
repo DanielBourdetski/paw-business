@@ -10,18 +10,25 @@ const ProductList = ({ products, title = '', className }) => {
 
 	return (
 		<>
-			{capitalizedTitle && <h2>{capitalizedTitle}</h2>}
+			{capitalizedTitle && (
+				<h2 className='text-center text-3xl italic underline'>
+					{capitalizedTitle}
+				</h2>
+			)}
 			<ul
-				className={`list-none grid grid-cols-2 md:grid-cols-4 w-full ${className}`}>
-				{products.map(p => (
-					<ProductCard
-						key={p._id}
-						info={p}
-						className=''
-						inCart={cartIds.includes(p._id)}
-						favorite={favorites.includes(p._id)}
-					/>
-				))}
+				className={`list-none grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 w-full ${className}`}>
+				{products.map(p => {
+					if (!p) return null;
+					return (
+						<ProductCard
+							key={p._id}
+							info={p}
+							className=''
+							inCart={cartIds.includes(p._id)}
+							favorite={favorites.includes(p._id)}
+						/>
+					);
+				})}
 			</ul>
 		</>
 	);

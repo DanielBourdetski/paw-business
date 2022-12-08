@@ -9,6 +9,7 @@ import EditUser from "../pages/EditUser";
 import EditProduct from "../pages/EditProduct";
 import Cart from "../pages/Cart";
 import ForgotPassword from "../pages/ForgotPassword";
+import Payment from "../pages/Payment";
 
 /**
  * navable: adds a link in the navbar
@@ -56,7 +57,6 @@ const routes = [
     name: 'My Account',
     element: <Account />,
     protected: true,
-    navable: true,
   },
   {
     path: '/add-product',
@@ -78,7 +78,7 @@ const routes = [
   },
   {
     path: '/update-account',
-    element: <EditUser isAccountUpdate />,
+    element: <EditUser />,
     protected: true
   },
   {
@@ -93,13 +93,17 @@ const routes = [
     name: 'Admin Panel',
     element: <Admin />,
     protected: true,
-    navable: true,
     admin: true,
   },
   {
     path: '/forgot-password/*',
     element: <ForgotPassword />,
   },
+  {
+    path: '/checkout',
+    element: <Payment />,
+    protected: true
+  }
 ]
 
 export default routes

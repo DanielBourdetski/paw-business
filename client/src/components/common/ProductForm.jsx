@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import productService from '../services/productService';
-import Input from './common/Input';
-import { toast } from 'react-toastify';
-import useHandleError from '../hooks/useHandleError';
+import productService from '../../services/productService';
+import Input from './Input';
+import useHandleError from '../../hooks/useHandleError';
 
 const initialFormState = {
 	name: '',
@@ -13,7 +12,12 @@ const initialFormState = {
 	animal: '',
 };
 
-const ProductForm = ({ defaultState, onSubmit, title, errors }) => {
+const ProductForm = ({
+	defaultState = initialFormState,
+	onSubmit,
+	title,
+	errors,
+}) => {
 	const [formState, setFormState] = useState(initialFormState);
 
 	const handleError = useHandleError();

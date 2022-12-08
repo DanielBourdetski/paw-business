@@ -31,7 +31,7 @@ const UserForm = ({ onSubmit, defaultValues, title, isFullForm, errors }) => {
 	return (
 		<form
 			onSubmit={e => onSubmit(e, formState)}
-			className='flex flex-col w-1/3 mx-auto mt-10 items-center'>
+			className='flex flex-col w-3/4 md:w-2/3 lg:w-1/3 mx-auto mt-10 items-center'>
 			<h1 className='text-2xl '>
 				{defaultValues ? `Edit ${defaultValues.name}'s account info` : title}
 			</h1>

@@ -14,14 +14,13 @@ const CartAndFavs = () => {
 		state => state.user
 	);
 
-	console.log(cartIds, favsIds);
-
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
 				const cart = await productService.getMultipleProductsInfo(
 					cartIds.map(p => p.product)
 				);
+
 				const favourites = await productService.getMultipleProductsInfo(
 					favsIds
 				);
@@ -41,17 +40,11 @@ const CartAndFavs = () => {
 	return (
 		<div>
 			{!!lists.cart.length && (
-				<>
-					<h2>My Cart</h2>
-					<ProductList products={lists.cart} />{' '}
-				</>
+				<ProductList title='My Cart' products={lists.cart} />
 			)}
 
 			{!!lists.favourites.length && (
-				<>
-					<h2>Favourites</h2>
-					<ProductList products={lists.favourites} />{' '}
-				</>
+				<ProductList title='Favorites' products={lists.favourites} />
 			)}
 		</div>
 	);

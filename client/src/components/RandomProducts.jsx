@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import productService from '../services/productService';
 import ProductList from './common/ProductList';
-import { toast } from 'react-toastify';
 import useHandleError from '../hooks/useHandleError';
 
 const getRandomIndex = limit => Math.floor(Math.random() * (limit - 0.5));
+const defaultNumberOfProducts = 4;
 
 const RandomProducts = () => {
 	const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const RandomProducts = () => {
 			try {
 				const allProducts = await productService.getAllProducts();
 
-				if (allProducts.length < 3) {
+				if (allProducts.length < defaultNumberOfProducts) {
 					setProducts(allProducts);
 					setLoading(false);
 					return;
@@ -26,7 +26,7 @@ const RandomProducts = () => {
 
 				let randomProducts = [];
 
-				for (let x = 0; x < 3; x++) {
+				for (let x = 0; x < defaultNumberOfProducts; x++) {
 					let randomIndex = getRandomIndex(allProducts.length);
 
 					while (

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import ProductForm from '../components/ProductForm';
+import ProductForm from '../components/common/ProductForm';
 import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import { toast } from 'react-toastify';

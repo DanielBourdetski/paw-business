@@ -47,6 +47,12 @@ const productSchema = new mongoose.Schema({
   }
 });
 
+productSchema.pre('save', function(next) {
+  this.price = +(this.price.toFixed(1))
+  console.log(this);
+  next()
+})
+
 const Product = mongoose.model('Product', productSchema);
 
 const validateProduct = product => {

@@ -9,8 +9,13 @@ import { validatePassword, validateUserUpdate } from '../validation/users';
 import { toast } from 'react-toastify';
 import useHandleError from '../hooks/useHandleError';
 
-const EditUser = ({ isAccountUpdate }) => {
-	const [userInfo, setUserInfo] = useState(null);
+const EditUser = () => {
+	const [userInfo, setUserInfo] = useState({
+		name: '',
+		email: '',
+		password: '',
+	});
+	const [errors, setErrors] = useState({});
 
 	const { name, email } = useSelector(state => state.user);
 	const { id } = useParams();
@@ -18,12 +23,14 @@ const EditUser = ({ isAccountUpdate }) => {
 	const navigate = useNavigate();
 	const handleError = useHandleError();
 
+	const isOwnAccountUpdate = id ? false : true;
+
 	useEffect(() => {
 		const fetchUserInfo = async () => {
 			try {
 				const fetchedUser = await adminService.getUserById(id);
 
-				return setUserInfo({
+				setUserInfo({
 					name: fetchedUser.name,
 					email: fetchedUser.email,
 					password: '',
@@ -33,9 +40,8 @@ const EditUser = ({ isAccountUpdate }) => {
 			}
 		};
 
-		if (!isAccountUpdate) return fetchUserInfo();
-
-		setUserInfo({ name, email, password: '' });
+		if (isOwnAccountUpdate) setUserInfo({ name, email, password: '' });
+		else fetchUserInfo();
 	}, []);
 
 	const handleUserUpdate = async (e, formState) => {
@@ -45,16 +51,27 @@ const EditUser = ({ isAccountUpdate }) => {
 		const userUpdate = { name, email };
 
 		const { error: userError } = validateUserUpdate(userUpdate);
-		if (userError) return toast.info(userError.details[0].message);
+		if (userError) {
+			return toast.info(userError.details[0].message);
+		}
 
 		if (password) {
-			const { error: passwordError } = validatePassword(password);
-			if (passwordError) return toast.info(passwordError.details[0].message);
+			const { error } = validatePassword(password);
+			if (error) {
+				const currentErrors = {};
+
+				error.details.forEach(
+					err => (currentErrors[err.path[0]] = err.message)
+				);
+				setErrors(currentErrors);
+
+				return toast.info(error.details[0].message);
+			}
 
 			userUpdate.password = password;
 		}
 
-		if (isAccountUpdate) {
+		if (isOwnAccountUpdate) {
 			try {
 				const user = await userService.updateAccountInfo(userUpdate);
 				user.token = userService.getToken();
@@ -81,8 +98,9 @@ const EditUser = ({ isAccountUpdate }) => {
 		<UserForm
 			defaultValues={userInfo}
 			isFullForm
-			title={isAccountUpdate ? 'Update account info' : 'Edit user'}
+			title={isOwnAccountUpdate ? 'Update account info' : 'Edit user'}
 			onSubmit={handleUserUpdate}
+			errors={errors}
 		/>
 	);
 };

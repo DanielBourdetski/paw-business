@@ -8,7 +8,7 @@ import userService from './services/userService';
 import { setJwt } from './services/httpService';
 import routesConfig from './config/routes';
 
-import Header from './components/Header';
+import Header from './components/nav/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from './store/store';
@@ -68,9 +68,11 @@ function App() {
       <ToastContainer position='bottom-right' />
       <div className=''>
         <Header isLogged={!!user} />
+        <div className='w-[85%] mx-auto'>
         <Routes>
           {routes}
         </Routes>
+        </div>
       </div>
     </>
   );

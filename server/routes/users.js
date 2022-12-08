@@ -30,6 +30,27 @@ router.post('/', async (req, res) => {
   res.send({ _id, name, email, cart, favorites, isAdmin, token });
 });
 
+router.post('/purchase', auth, async (req, res) => {
+  const { user } = req;
+
+  try {
+    if (user.cart.length === 0) return res.status(400).send('No products in cart to order');
+
+    user.cart.forEach(async p => {
+        const product = await Product.findById(p.product);
+        product._sold += p.amount;
+        await product.save();
+    });
+
+    user.cart = [];
+    await user.save();
+
+    res.send('ok')
+  } catch (err) { 
+    res.status(500).send('Unexpected error has occured:', err.message)
+  }
+})
+
 router.post('/add-to-cart', auth, async (req, res) => {
   try {
     const amountToAdd = req.body.amount || 1;
@@ -55,6 +76,45 @@ router.post('/add-to-cart', auth, async (req, res) => {
     if (err.patch === '_id') return res.status(400).send('Invalid id');
 
     res.status(500).send('Unexpeced error has occured:', err.message);
+  }
+})
+
+router.get('/cart-info', auth, async (req, res) => {
+  try {
+    const user = req.user;
+    const cart = user.cart;
+
+    if (!cart.length) return res.send({fullCartInfo: []});
+
+    const ids = cart.map(p => p.product.toString());
+    const productsInfo = await Product.find({ '_id': { $in: ids }}, { createdAt: 0, __v: 0, _sold: 0 } );
+  
+
+    const fullCartInfo = productsInfo.map(d => {
+      const {amount} = cart.find(ci => {
+        return ci.product.toString() === d._id.toString()
+      });
+
+      return {...d._doc, amount}
+    })
+
+    const data = { fullCartInfo, deletedSome: false };
+
+    if (ids.length !== productsInfo.length) {
+      const validIds = productsInfo.map(p => p._id.toString());
+      const invalidIds = ids.filter(id => !validIds.includes(id));
+      
+      const cartWithoutInvalidIds = user.cart.filter(i => !invalidIds.includes(i.product.toString()));
+      user.cart = cartWithoutInvalidIds;
+      await user.save();
+
+      data.deletedSome = true;
+    }
+
+    res.send(data);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send('An unexpected error has occured while trying to get cart')
   }
 })
 
@@ -87,7 +147,6 @@ router.put('/add-or-reduce-in-cart/:action/:id', auth, async (req, res) => {
   } catch (err) {
     if (err.patch === '_id') return res.status(400).send('Invalid id');
 
-    console.log(err);
     res.status(500).send('Unexpeced error');
   }
 })

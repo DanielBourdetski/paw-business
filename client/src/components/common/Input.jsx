@@ -1,10 +1,17 @@
-const Input = ({ label, type = 'text', onChange, value, invalidMessage }) => {
+const Input = ({
+	label,
+	type = 'text',
+	onChange,
+	value,
+	invalidMessage,
+	className,
+}) => {
 	const invalid = !!invalidMessage;
 	const invalidClassName = 'border-2 border-red-600';
 
 	return (
 		<>
-			<label className='w-full text-lg' htmlFor={label}>
+			<label className={`w-full text-lg ${className}`} htmlFor={label}>
 				{label}
 				<input
 					type={type}

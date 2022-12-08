@@ -59,6 +59,11 @@ export const removeFromCart = async id => {
   return res.data;
 }
 
+export const getFullCartInfo = async () => {
+  const res = await http.get('/users/cart-info');
+  return res.data;
+}
+
 export const updateAccountInfo = async user => {
   const res = await http.put('/users/update-account', user);
   return res.data;
@@ -79,6 +84,11 @@ export const resetPassword = async (password, token) => {
   return res.data;
 }
 
+export const purchase = async () => {
+  const res = await http.post('/users/purchase');
+  return res.data;
+}
+
 const userService = {
   getAllUsers,
   login,
@@ -94,7 +104,8 @@ const userService = {
   removeFromCart,
   confirmResetToken,
   sendRestLink,
-  resetPassword
+  resetPassword,
+  getFullCartInfo,
 }
 
 export default userService

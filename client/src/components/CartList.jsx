@@ -123,7 +123,7 @@ const CartList = ({ cart }) => {
 	return (
 		<>
 			<h1 className='text-2xl font-bold text-center'>My Cart</h1>
-			<div className='w-5/6 grid grid-cols-3 mx-auto'>{productCards}</div>;
+			<div className='w-5/6 grid grid-cols-4 mx-auto'>{productCards}</div>;
 			<div className='mx-auto w-40'>
 				<button onClick={onCheckout} className='border p-1'>
 					Continue to checkout -{'>'}

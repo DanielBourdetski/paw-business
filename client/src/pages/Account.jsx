@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import CartAndFavs from '../components/CartAndFavs';
 
-import productService from '../services/productService';
 import userService from '../services/userService';
-import { toast } from 'react-toastify';
 import useHandleError from '../hooks/useHandleError';
+import { useNavigate } from 'react-router-dom';
 
 const Account = () => {
 	const [loading, setLoading] = useState(2);
 	const [accountInfo, setAccountInfo] = useState({});
 
 	const handleError = useHandleError();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const getAccountInfo = async () => {
@@ -33,11 +32,13 @@ const Account = () => {
 	// TODO continue this
 	return (
 		<div>
-			<h1 className='text-3xl'>My Account</h1>
-			<h2 className='text-xl'>Hello, {accountInfo.name}</h2>
-			<div className='flex gap-x-1'>
+			<h1 className='text-3xl text-center'>My Account</h1>
+			<h2 className='text-xl text-center'>Hello, {accountInfo.name}</h2>
+			<div className='flex gap-x-1 mt-2'>
 				<p>Linked Email: {accountInfo.email}</p>
-				<button className='text-gray-500 border rounded px-1 hover:text-gray-600 hover:bg-gray-200 duration-150'>
+				<button
+					className='text-gray-500 border rounded px-1 hover:text-gray-600 hover:bg-gray-200 duration-150'
+					onClick={() => navigate('/update-account')}>
 					update
 				</button>
 			</div>

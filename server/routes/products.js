@@ -103,7 +103,7 @@ router.get('/search/:keyWords', auth, async (req, res) => {
     const keyWords = keyWordsString.split(' ');
     const regexKeyWords = keyWords.join('|');
 
-    const results = await Product.find({$or: [{tags: {$in: keyWords}}, {name: {$regex: regexKeyWords}}, {description: {$regex: regexKeyWords}}]})
+    const results = await Product.find({$or: [{tags: {$in: keyWords}}, {name: {$regex: regexKeyWords}}, {description: {$regex: regexKeyWords}}, {animal: {$regex: regexKeyWords}}]})
     res.send(results)
   } catch (err) {
     res.status(500).send('unexpected error:' + err.message);
@@ -116,8 +116,7 @@ router.get('/multiple-info', auth, async (req, res) => {
     if (ids.length === 0) return res.status(200).send([]);
 
     const products = await Product.find({ '_id': { $in: ids }}, { createdAt: 0, __v: 0, _sold: 0 } );
-    if (!products) return res.status(404).send('no products with provided ids found');
-
+    if (!products) return res.status(404).send('No products with the provided IDs found');
     
     const productsByOrderRecieved = ids.map(id => {
       const product = products.find(p => p._id.toString() === id);
@@ -126,8 +125,7 @@ router.get('/multiple-info', auth, async (req, res) => {
 
     res.send(productsByOrderRecieved);
   } catch (err) {
-    if (err.path === '_id') return res.status(400).send('one of the ids is invalid');
-    console.log(err.message);
+    if (err.path === '_id') return res.status(400).send('One or more of the product IDs provided are invalid');
     res.status(500).send('unexpected error');
   }
 })

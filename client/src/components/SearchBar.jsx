@@ -1,25 +1,18 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const SearchBar = () => {
-	const [searchWords, setSearchWords] = useState('');
-	const navigate = useNavigate();
-
-	const onSearch = e => {
-		e.preventDefault();
-		navigate('/products/' + searchWords);
-	};
+const SearchBar = ({ onSearch }) => {
+	const [searchTerm, setSearchTerm] = useState('');
 
 	return (
-		<form className='border border-black rounded-full w-1/5 m-5 p-1 px-2'>
+		<form className='border border-black rounded-full min-w-[200px] max-w-[30%] m-5 p-1 px-2 whitespace-nowrap'>
 			<input
 				className='bg-transparent focus:outline-0 ml-3'
 				type='text'
-				value={searchWords}
+				value={searchTerm}
 				placeholder='Search'
-				onChange={e => setSearchWords(e.target.value)}
+				onChange={e => setSearchTerm(e.target.value)}
 			/>
-			<button type='submit' onClick={e => onSearch(e)}></button>
+			<button type='submit' onClick={e => onSearch(e, searchTerm)}></button>
 		</form>
 	);
 };

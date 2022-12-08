@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ProductForm from '../components/ProductForm';
+import ProductForm from '../components/common/ProductForm';
 import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import { toast } from 'react-toastify';
@@ -18,6 +18,7 @@ const initialProductState = {
 
 const EditProduct = () => {
 	const [productInfo, setProductInfo] = useState(initialProductState);
+	const [errors, setErrors] = useState({});
 
 	const { id } = useParams();
 	const navigate = useNavigate();
@@ -25,9 +26,9 @@ const EditProduct = () => {
 
 	useEffect(() => {
 		if (!id) {
-			// TODO handle no id
 			toast.error('No product id!');
-			return navigate('/products');
+			// ! untested
+			return navigate(-1);
 		}
 
 		const fetchProductInfo = async () => {
@@ -61,12 +62,17 @@ const EditProduct = () => {
 		productData.tags = formState.tags.replaceAll(' ', '').split(',');
 
 		const { error } = validateProduct(productData);
+		if (error) {
+			const currentErrors = {};
 
-		// TODO handle invalid value
-		if (error) return toast.info(error?.details[0]?.message);
+			error.details.forEach(err => (currentErrors[err.path[0]] = err.message));
+			setErrors(currentErrors);
+
+			return toast.info(error?.details[0]?.message);
+		}
 
 		try {
-			const res = await productService.updateProduct(productData, id);
+			await productService.updateProduct(productData, id);
 			navigate('/admin');
 		} catch (err) {
 			handleError(err, "update a product's info");
@@ -78,6 +84,7 @@ const EditProduct = () => {
 			onSubmit={onSubmit}
 			defaultState={productInfo}
 			title='Edit Product'
+			errors={errors}
 		/>
 	);
 };

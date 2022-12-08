@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import adminService from '../services/adminService';
 import userService from '../services/userService';
 import useHandleError from '../hooks/useHandleError';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 const UsersTable = () => {
 	const [users, setUsers] = useState([]);
-	const [displayedUsers, setDisplayedUsers] = useState(users);
+	const [filteredUsers, setFilteredUsers] = useState(users);
 
 	const navigate = useNavigate();
 	const handleError = useHandleError();
@@ -16,7 +18,7 @@ const UsersTable = () => {
 			try {
 				const fetchedUsers = await userService.getAllUsers();
 				setUsers(fetchedUsers);
-				setDisplayedUsers(fetchedUsers);
+				setFilteredUsers(fetchedUsers);
 			} catch (err) {
 				handleError(err, 'fetch all users infos');
 			}
@@ -24,6 +26,10 @@ const UsersTable = () => {
 
 		fetchAllUsers();
 	}, []);
+
+	useEffect(() => {
+		setFilteredUsers(users);
+	}, [users]);
 
 	const toggleAdminStatus = async id => {
 		try {
@@ -40,18 +46,36 @@ const UsersTable = () => {
 		}
 	};
 
-	const onDeleteUser = async id => {
-		try {
-			const deletedUser = await adminService.deleteUser(id);
+	const onDeleteUser = id => {
+		const deleteUser = async () => {
+			try {
+				const deletedUser = await adminService.deleteUser(id);
 
-			const userIndexInState = users.findIndex(u => u._id === deletedUser._id);
-			const updatedUsers = [...users];
-			updatedUsers.splice(userIndexInState, 1);
+				const userIndexInState = users.findIndex(
+					u => u._id === deletedUser._id
+				);
+				const updatedUsers = [...users];
+				updatedUsers.splice(userIndexInState, 1);
 
-			setUsers(updatedUsers);
-		} catch (err) {
-			handleError(err, 'delete a user from database');
-		}
+				setUsers(updatedUsers);
+			} catch (err) {
+				handleError(err, 'delete a user from database');
+			}
+		};
+
+		confirmAlert({
+			title: 'Are you sure you want to delete the user?',
+			message: 'This is an irreversible action.',
+			buttons: [
+				{
+					label: 'Delete user',
+					onClick: deleteUser,
+				},
+				{
+					label: 'Take me back',
+				},
+			],
+		});
 	};
 
 	const editUser = id => navigate(`/edit-user/${id}`);
@@ -60,15 +84,23 @@ const UsersTable = () => {
 		e.preventDefault();
 
 		const searchTerm = e.target[0].value;
-		if (!searchTerm) return setDisplayedUsers(users);
+		if (!searchTerm) return setFilteredUsers(users);
 
-		console.log(users);
-
-		const matchingUsers = users.filter(u =>
+		const matchingUsersByName = users.filter(u =>
 			u.name.match(new RegExp(searchTerm, 'i'))
 		);
 
-		setDisplayedUsers(matchingUsers);
+		const matchingUsersByEmail = users.filter(u => {
+			u.email.match(new RegExp(searchTerm, 'i'));
+		});
+
+		const matchingUsers = [...matchingUsersByEmail, ...matchingUsersByName];
+
+		const uniqueMatchingUsers = matchingUsers.filter(
+			(u, i, users) => i === users.findIndex(u2 => u2._id === u._id)
+		);
+
+		setFilteredUsers(uniqueMatchingUsers);
 	};
 
 	return (
@@ -80,6 +112,7 @@ const UsersTable = () => {
 					className='border border-black mx-20 my-5 p-1 pl-4 rounded'
 				/>
 			</form>
+
 			<table className='w-[95%] mx-auto table-auto text-sm text-center'>
 				<thead>
 					<tr>
@@ -92,8 +125,9 @@ const UsersTable = () => {
 						<th>Actions</th>
 					</tr>
 				</thead>
+
 				<tbody>
-					{displayedUsers.map(u => {
+					{filteredUsers.map(u => {
 						return (
 							<tr key={u.email}>
 								<td>{u.name}</td>
