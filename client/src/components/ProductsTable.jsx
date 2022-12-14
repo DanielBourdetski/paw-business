@@ -4,6 +4,8 @@ import productService from '../services/productService';
 import useHandleError from '../hooks/useHandleError';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import useLoader from '../hooks/useLoader';
+import Tags from './common/Tags';
 
 const ProductsTable = () => {
 	const [products, setProducts] = useState([]);
@@ -11,14 +13,19 @@ const ProductsTable = () => {
 
 	const navigate = useNavigate();
 	const handleError = useHandleError();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const getData = async () => {
 			try {
+				startLoading();
+
 				const fetchedProducts = await productService.getAllProducts();
 				setProducts(fetchedProducts);
 			} catch (err) {
 				handleError(err, 'fetch all products');
+			} finally {
+				stopLoading();
 			}
 		};
 
@@ -96,6 +103,8 @@ const ProductsTable = () => {
 		setFilteredProducts(uniqueMatchingProducts);
 	};
 
+	if (!loaded) return null;
+
 	return (
 		<>
 			<form onSubmit={onSearchProducts}>
@@ -105,31 +114,35 @@ const ProductsTable = () => {
 					className='border border-black mx-20 my-5 p-1 pl-4 rounded'
 				/>
 			</form>
-			<table className='w-[95%] mx-auto table-auto text-sm text-center'>
+			<table className='w-[95%] mx-auto table-auto text-sm text-center border-separate border border-slate-500'>
 				<thead>
 					<tr>
-						<th>Product</th>
-						<th>Description</th>
-						<th>Price</th>
-						<th>Image</th>
-						<th>Animal</th>
-						<th>Tags</th>
-						<th>Amount sold</th>
-						<th>Actions</th>
+						<th className='border border-slate-400 '>Product</th>
+						<th className='border border-slate-400 '>Description</th>
+						<th className='border border-slate-400 '>Price</th>
+						<th className='border border-slate-400 '>Image url</th>
+						<th className='border border-slate-400 '>Animal</th>
+						<th className='border border-slate-400 '>Tags</th>
+						<th className='border border-slate-400 '>Amount sold</th>
+						<th className='border border-slate-400 '>Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{filteredProducts.map(p => {
 						return (
 							<tr className='h-6' key={p.name}>
-								<td>{p.name}</td>
-								<td>{p.description}</td>
-								<td>{p.price}</td>
-								<td>{p.image}</td>
-								<td>{p.animal}</td>
-								<td>{p.tags}</td>
-								<td>{p._sold}</td>
-								<td>
+								<td className='border border-slate-300'>{p.name}</td>
+								<td className='border border-slate-300'>{p.description}</td>
+								<td className='border border-slate-300'>{p.price}</td>
+								<td className='border border-slate-300 object-contain'>
+									<img src={p.image} alt='' />
+								</td>
+								<td className='border border-slate-300'>{p.animal}</td>
+								<td className='border border-slate-300 p-1'>
+									{<Tags tags={p.tags} />}
+								</td>
+								<td className='border border-slate-300'>{p._sold}</td>
+								<td className='border border-slate-300'>
 									<button onClick={() => onEditProduct(p._id)}>Edit</button>
 									<button onClick={() => onDeleteProduct(p._id)}>Delete</button>
 								</td>

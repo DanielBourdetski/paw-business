@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import productService from '../services/productService';
-import ProductList from './common/ProductList';
-import useHandleError from '../hooks/useHandleError';
+import productService from '../../services/productService';
+import ProductList from './ProductList';
+import useHandleError from '../../hooks/useHandleError';
+import useLoader from '../../hooks/useLoader';
 
 const getRandomIndex = limit => Math.floor(Math.random() * (limit - 0.5));
 const defaultNumberOfProducts = 4;
@@ -12,10 +13,12 @@ const RandomProducts = () => {
 	const [products, setProducts] = useState([]);
 
 	const handleError = useHandleError();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const fetchRandomProducts = async () => {
 			try {
+				startLoading();
 				const allProducts = await productService.getAllProducts();
 
 				if (allProducts.length < defaultNumberOfProducts) {
@@ -40,13 +43,15 @@ const RandomProducts = () => {
 				setLoading(false);
 			} catch (err) {
 				handleError(err, 'get popular products');
+			} finally {
+				stopLoading();
 			}
 		};
 
 		fetchRandomProducts();
 	}, []);
 
-	if (loading) return <p>LOADING...</p>;
+	if (!loaded) return null;
 
 	return (
 		<>

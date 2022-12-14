@@ -16,7 +16,7 @@ const PasswordResetRequest = () => {
 	const handleError = useHandleError();
 
 	useEffect(() => {
-		if (user.token) navigate('/login');
+		if (user.token) navigate('/account');
 	}, []);
 
 	const onChange = e => setEmail(e.target.value);

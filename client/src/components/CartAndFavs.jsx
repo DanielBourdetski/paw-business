@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import productService from '../services/productService';
-import ProductList from './common/ProductList';
+import ProductList from './products/ProductList';
 import useHandleError from '../hooks/useHandleError';
+import useLoader from '../hooks/useLoader';
 
 const CartAndFavs = () => {
-	const [lists, setLists] = useState({ cart: null, favourites: null });
-	const [loading, setLoading] = useState(true);
+	const [cartFullInfo, setCartFullInfo] = useState([]);
+	const [favoritesFullInfo, setFavoritesFullInfo] = useState([]);
 
 	const handleError = useHandleError();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	const { cart: cartIds = [], favorites: favsIds = [] } = useSelector(
 		state => state.user
@@ -17,34 +19,50 @@ const CartAndFavs = () => {
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
+				startLoading();
+
 				const cart = await productService.getMultipleProductsInfo(
 					cartIds.map(p => p.product)
 				);
 
-				const favourites = await productService.getMultipleProductsInfo(
-					favsIds
-				);
-
-				setLists({ cart, favourites });
-				setLoading(false);
+				setCartFullInfo(cart);
 			} catch (err) {
-				return handleError(err, 'fetch favorites and cart');
+				return handleError(err, 'fetch products in cart');
+			} finally {
+				stopLoading();
 			}
 		};
 
 		fetchProducts();
-	}, []);
+	}, [cartIds]);
 
-	if (loading) return <p>LOADING...</p>;
+	useEffect(() => {
+		const fetchFavorites = async () => {
+			try {
+				startLoading();
+				const favorites = await productService.getMultipleProductsInfo(favsIds);
+
+				setFavoritesFullInfo(favorites);
+			} catch (err) {
+				return handleError(err, 'fetch favorites');
+			} finally {
+				stopLoading();
+			}
+		};
+
+		fetchFavorites();
+	}, [favsIds]);
+
+	if (!loaded) return null;
 
 	return (
 		<div>
-			{!!lists.cart.length && (
-				<ProductList title='My Cart' products={lists.cart} />
+			{!!cartFullInfo.length && (
+				<ProductList title='My Cart' products={cartFullInfo} />
 			)}
 
-			{!!lists.favourites.length && (
-				<ProductList title='Favorites' products={lists.favourites} />
+			{!!favoritesFullInfo.length && (
+				<ProductList title='Favorites' products={favoritesFullInfo} />
 			)}
 		</div>
 	);

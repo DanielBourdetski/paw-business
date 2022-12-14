@@ -1,6 +1,4 @@
 const CheckoutProductCard = ({ product }) => {
-	console.log(product);
-
 	return (
 		<li className='flex items-center gap-x-10 border border-gray-400 rounded px-6'>
 			<div className='flex flex-col items-start pl-8 py-8'>

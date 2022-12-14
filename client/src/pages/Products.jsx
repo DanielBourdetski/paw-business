@@ -1,28 +1,31 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import ProductList from '../components/common/ProductList';
+import { useNavigate } from 'react-router-dom';
+import ProductList from '../components/products/ProductList';
 import productService from '../services/productService';
-import SearchBar from '../components/SearchBar';
+import SearchBar from '../components/common/SearchBar';
 import useHandleError from '../hooks/useHandleError';
+import useLoader from '../hooks/useLoader';
 
 const Products = () => {
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
 	const [searchTerm, setSearchTerm] = useState('');
-	const [loading, setLoading] = useState(true);
 
 	const handleError = useHandleError();
 	const navigate = useNavigate();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const fetchProducts = async () => {
 			try {
+				startLoading();
+
 				const fetchedProducts = await productService.getAllProducts();
 				setProducts(fetchedProducts);
 			} catch (err) {
 				handleError(err, 'get products from database');
 			} finally {
-				setLoading(false);
+				stopLoading();
 			}
 		};
 
@@ -80,7 +83,7 @@ const Products = () => {
 
 	const onAddProducts = () => navigate('/add-product');
 
-	if (loading) return <p>LOADING</p>;
+	if (!loaded) return null;
 
 	return (
 		<>

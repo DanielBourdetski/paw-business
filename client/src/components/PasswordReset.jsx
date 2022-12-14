@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { validatePassword } from '../validation/users';
 import useHandleError from '../hooks/useHandleError';
+import useLoader from '../hooks/useLoader';
 
 const InvalidToken = () => {
 	const navigate = useNavigate();
@@ -32,15 +33,19 @@ const PasswordReset = () => {
 	const { resetToken: token } = useParams();
 	const navigate = useNavigate();
 	const handleError = useHandleError();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const confirmToken = async () => {
+			startLoading();
 			try {
 				const isTokenConfirmed = await userService.confirmResetToken(token);
 				setIsTokenLegit(isTokenConfirmed ? true : false);
 			} catch (err) {
 				handleError(err, 'confirm reset link');
 				setIsTokenLegit(false);
+			} finally {
+				stopLoading();
 			}
 		};
 
@@ -67,7 +72,7 @@ const PasswordReset = () => {
 		}
 	};
 
-	if (isTokenLegit === null) return <p>LOADING</p>;
+	if (!loaded) return null;
 
 	if (!isTokenLegit) return <InvalidToken />;
 

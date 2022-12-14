@@ -5,6 +5,7 @@ import userService from '../services/userService';
 import useHandleError from '../hooks/useHandleError';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import useLoader from '../hooks/useLoader';
 
 const UsersTable = () => {
 	const [users, setUsers] = useState([]);
@@ -12,15 +13,20 @@ const UsersTable = () => {
 
 	const navigate = useNavigate();
 	const handleError = useHandleError();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const fetchAllUsers = async () => {
 			try {
+				startLoading();
+
 				const fetchedUsers = await userService.getAllUsers();
 				setUsers(fetchedUsers);
 				setFilteredUsers(fetchedUsers);
 			} catch (err) {
 				handleError(err, 'fetch all users infos');
+			} finally {
+				stopLoading();
 			}
 		};
 
@@ -102,6 +108,8 @@ const UsersTable = () => {
 
 		setFilteredUsers(uniqueMatchingUsers);
 	};
+
+	if (!loaded) return null;
 
 	return (
 		<>

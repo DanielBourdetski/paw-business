@@ -1,31 +1,27 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import userService from '../../services/userService';
-import { userActions } from '../../store/store';
-import FullLogo from '../common/Logos';
+import { useSelector } from 'react-redux';
+import FullLogo, { Logo } from '../common/Logos';
+import HamburgerMenu from './HamburgerMenu';
 import Nav from './Nav';
 
 const Header = () => {
-	const navigate = useNavigate();
-	const dispatch = useDispatch();
-
 	const { token, isAdmin } = useSelector(state => state.user);
 	const isLogged = !!token;
 
-	const onClick = () => {
-		dispatch(userActions.removeUser());
-		userService.signout();
-
-		navigate('login');
-	};
-
 	return (
-		<nav className={`w-full h-24 p-2 flex bg-cyan-200 shadow`}>
-			<div className={`flex h-full items-center `}>
-				<FullLogo />
-			</div>
-			{isLogged && <Nav userIsAdmin={isAdmin} />}
-		</nav>
+		<>
+			<nav
+				className={`hidden md:flex w-screen h-24 p-2 z-[100] bg-cyan-200 shadow relative`}>
+				<div className={`flex h-full items-center `}>
+					<FullLogo />
+				</div>
+				{isLogged && <Nav userIsAdmin={isAdmin} />}
+			</nav>
+
+			<nav className='w-full h-24 flex items-center justify-between p-2 pr-8 md:hidden bg-cyan-200 shadow'>
+				<Logo className='ml-4' />
+				{isLogged && <HamburgerMenu userIsAdmin={isAdmin} />}
+			</nav>
+		</>
 	);
 };
 

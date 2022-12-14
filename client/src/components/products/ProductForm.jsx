@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import productService from '../../services/productService';
-import Input from './Input';
+import Input from '../common/Input';
 import useHandleError from '../../hooks/useHandleError';
 
 const initialFormState = {

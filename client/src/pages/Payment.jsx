@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useState } from 'react';
 import CheckoutStageIndicator from '../components/checkout/CheckoutStageIndicator';
 import CartReview from '../components/checkout/CartReview';

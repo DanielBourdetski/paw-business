@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -10,19 +10,22 @@ import routesConfig from './config/routes';
 
 import Header from './components/nav/Header';
 import ProtectedRoute from './components/common/ProtectedRoute';
+import Loader from './components/common/Loader'
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from './store/store';
 import useHandleError from './hooks/useHandleError';
+import useLoader from './hooks/useLoader';
 
 function App() {
-  const [loading, setLoading] = useState(true)  
   const [routes, setRoutes] = useState([])
   
   const user = useSelector(state => state.user)
+  const loaderClassName = useSelector(state => state.general.loaderClassName);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const handleError = useHandleError();
+  const { stopLoading, isInitialLoaded } = useLoader();
 
   useEffect(() => {
     const routesArr = routesConfig.map((r, i) => {
@@ -33,11 +36,11 @@ function App() {
     
     setRoutes(routesArr);
 
-    if (/forgot-password.*/.test(location.pathname)) return setLoading(false);
+    if (/forgot-password.*/.test(location.pathname)) return stopLoading();
 
     const token = userService.getToken();
     if (!token) {
-      setLoading(false);
+      stopLoading();
       return navigate('/login');
     }
 
@@ -54,24 +57,23 @@ function App() {
         handleError(err, 'get account info')
       } 
       finally {
-        setLoading(false);
+        stopLoading();
     }
   }
 
   getAccountInfo();
   }, [])
 
-  if (loading) return <p>LOADING</p>
-
   return (
     <>
       <ToastContainer position='bottom-right' />
-      <div className=''>
+      <div className='w-screen'>
         <Header isLogged={!!user} />
+        <Loader className={loaderClassName} />
         <div className='w-[85%] mx-auto'>
-        <Routes>
+        {isInitialLoaded && <Routes>
           {routes}
-        </Routes>
+        </Routes>}
         </div>
       </div>
     </>

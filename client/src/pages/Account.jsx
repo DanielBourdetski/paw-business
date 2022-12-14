@@ -4,30 +4,31 @@ import CartAndFavs from '../components/CartAndFavs';
 import userService from '../services/userService';
 import useHandleError from '../hooks/useHandleError';
 import { useNavigate } from 'react-router-dom';
+import useLoader from '../hooks/useLoader';
 
 const Account = () => {
-	const [loading, setLoading] = useState(2);
 	const [accountInfo, setAccountInfo] = useState({});
 
 	const handleError = useHandleError();
 	const navigate = useNavigate();
+	const { startLoading, stopLoading, loaded } = useLoader();
 
 	useEffect(() => {
 		const getAccountInfo = async () => {
 			try {
 				const fetchedInfo = await userService.getAccountInfo();
 				setAccountInfo(fetchedInfo);
-				setLoading(updatedLoading => updatedLoading - 1);
+				startLoading();
 			} catch (err) {
 				handleError(err);
 			} finally {
-				setLoading(false);
+				stopLoading();
 			}
 		};
 		getAccountInfo();
 	}, []);
 
-	if (loading) return <p>LOADING...</p>;
+	if (!loaded) return null;
 
 	// TODO continue this
 	return (

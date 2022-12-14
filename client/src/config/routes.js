@@ -10,9 +10,11 @@ import EditProduct from "../pages/EditProduct";
 import Cart from "../pages/Cart";
 import ForgotPassword from "../pages/ForgotPassword";
 import Payment from "../pages/Payment";
+import { NavLink } from "react-router-dom";
 
 /**
- * navable: adds a link in the navbar
+ * navable: adds link to nav
+ * mobile: adds link to mobile nav
  * name: link name in navbar
  * protected: only registered users can access
  * admin: only admins can access
@@ -25,6 +27,7 @@ const routes = [
     element: <Home />,
     protected: true,
     navable: true,
+    mobile: true
   },
   {
     path: '/login',
@@ -45,6 +48,7 @@ const routes = [
     element: <Products />,
     protected: true,
     navable: true,
+    mobile: true
   },
   {
     path: '/products/:search',
@@ -57,6 +61,7 @@ const routes = [
     name: 'My Account',
     element: <Account />,
     protected: true,
+    mobile: true
   },
   {
     path: '/add-product',
@@ -87,6 +92,7 @@ const routes = [
     element: <Cart />,
     navable: true,
     protected: true,
+    mobile: true
   },
   {
     path: '/admin',
@@ -94,6 +100,7 @@ const routes = [
     element: <Admin />,
     protected: true,
     admin: true,
+    mobile: true
   },
   {
     path: '/forgot-password/*',
@@ -105,5 +112,49 @@ const routes = [
     protected: true
   }
 ]
+
+export const getMobileNavLinks = userIsAdmin => routes.map(r => {
+  if (!r.mobile) return null;
+  if (r.admin && !userIsAdmin) return null;
+
+  return (
+    <li key={r.path} className='text-center'>
+      <NavLink
+        to={r.path}
+        className={({ isActive }) =>
+          `px-4 py-2 rounded-full hover:shadow-sm hover:shadow-primary duration-100 ${
+            isActive
+              ? 'shadow-sm border border-x-2 border-primary'
+              : undefined
+          }`
+        }>
+        {' '}
+        {r.name}
+      </NavLink>
+    </li>
+  );
+});
+
+export const getNavLinks = userIsAdmin => routes.map(r => {
+  if (!r.navable) return null;
+  if (r.admin && !userIsAdmin) return null;
+
+  return (
+    <li key={r.path} className='mx-3'>
+      <NavLink
+        to={r.path}
+        className={({ isActive }) =>
+          `px-4 py-2 rounded-full hover:shadow-sm hover:shadow-primary duration-100 ${
+            isActive
+              ? 'shadow-sm border border-x-2 border-primary'
+              : undefined
+          }`
+        }>
+        {' '}
+        {r.name}
+      </NavLink>
+    </li>
+  );
+});
 
 export default routes

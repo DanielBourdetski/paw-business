@@ -16,7 +16,7 @@ const ProductList = ({ products, title = '', className }) => {
 				</h2>
 			)}
 			<ul
-				className={`list-none grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 w-full ${className}`}>
+				className={`list-none grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-y-4 my-4 w-full ${className}`}>
 				{products.map(p => {
 					if (!p) return null;
 					return (

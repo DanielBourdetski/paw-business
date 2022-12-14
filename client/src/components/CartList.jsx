@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import productService from '../services/productService';
-import { toast } from 'react-toastify';
 import userService from '../services/userService';
 import { userActions } from '../store/store';
 import useHandleError from '../hooks/useHandleError';
@@ -51,6 +50,8 @@ const CartProductCard = ({
 			handleError(err, 'remove a product from cart');
 		}
 	};
+
+	// TODO organize all cart related components into one folder
 
 	return (
 		<div className='border border-black p-1 m-3'>

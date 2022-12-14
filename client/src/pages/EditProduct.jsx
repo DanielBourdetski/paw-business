@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import ProductForm from '../components/common/ProductForm';
+import ProductForm from '../components/products/ProductForm';
 import productService from '../services/productService';
 import { validateProduct } from '../validation/products';
 import { toast } from 'react-toastify';
@@ -27,7 +27,6 @@ const EditProduct = () => {
 	useEffect(() => {
 		if (!id) {
 			toast.error('No product id!');
-			// ! untested
 			return navigate(-1);
 		}
 
