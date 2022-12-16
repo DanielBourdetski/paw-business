@@ -1,40 +1,34 @@
-import { useEffect } from 'react';
-import userService from '../../services/userService';
 import CheckoutProductCard from './CheckoutProduct';
 import QuickSummary from './QuickSummary';
-import { toast } from 'react-toastify';
 import useHandleError from '../../hooks/useHandleError';
-import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import userService from '../../services/userService';
+import { userActions } from '../../store/store';
 
-const CartReview = ({ onNextStage, productsInCart, setProductsInCart }) => {
-	const navigate = useNavigate();
+const CartReview = ({ onNextStage, productsInCart, cart }) => {
 	const handleError = useHandleError();
+	const dispatch = useDispatch();
 
-	useEffect(() => {
-		const fetchProducts = async () => {
-			try {
-				const { fullCartInfo, deletedSome } =
-					await userService.getFullCartInfo();
+	const onProductAmountChange = async (id, action) => {
+		try {
+			const updatedProductInfo = await userService.addOrReduceInCart(
+				action,
+				id
+			);
+			const productIndexInCart = cart.findIndex(
+				p => p.product === updatedProductInfo.product
+			);
 
-				if (fullCartInfo.length === 0) {
-					navigate('/');
-					return;
-				}
+			console.log(updatedProductInfo);
 
-				if (deletedSome)
-					toast.info(
-						'Some products in your cart had invalid info or were removed from the store, and were remove from your cart.',
-						{ autoClose: 3500 }
-					);
+			const updatedCart = [...cart];
+			updatedCart[productIndexInCart] = updatedProductInfo;
 
-				setProductsInCart(fullCartInfo);
-			} catch (err) {
-				handleError(err, 'get product info');
-			}
-		};
-
-		fetchProducts();
-	}, [productsInCart, setProductsInCart]);
+			dispatch(userActions.updateCart(updatedCart));
+		} catch (err) {
+			handleError(err, 'add product amount');
+		}
+	};
 
 	let totalItemsPrice;
 	try {
@@ -47,11 +41,17 @@ const CartReview = ({ onNextStage, productsInCart, setProductsInCart }) => {
 	}
 
 	return (
-		<div className='flex w-[80%] gap-x-4 mx-auto'>
-			<ul className='grid grid-col-2 mx-auto gap-y-4 max-w-[80%]'>
+		<div className='flex flex-col-reverse md:flex-row w-full md:w-[80%] gap-x-4 mx-auto'>
+			<ul className='flex flex-col mx-auto gap-y-4 mb-10'>
 				{productsInCart?.map(p => {
 					if (p === null || p === undefined) return null;
-					return <CheckoutProductCard key={p.name} product={p} />;
+					return (
+						<CheckoutProductCard
+							key={p.name}
+							product={p}
+							onProductAmountChange={onProductAmountChange}
+						/>
+					);
 				})}
 			</ul>
 			<QuickSummary onNextStage={onNextStage} total={totalItemsPrice} />

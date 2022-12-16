@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { getMobileNavLinks } from '../../config/routes';
 import userService from '../../services/userService';
 import { userActions } from '../../store/store';
-import Nav from './Nav';
 
 const HamburgerMenu = ({ userIsAdmin }) => {
 	const [isMenuOpen, setMenuOpen] = useState(false);
@@ -15,16 +14,17 @@ const HamburgerMenu = ({ userIsAdmin }) => {
 
 	const handleMenuToggle = () => setMenuOpen(!isMenuOpen);
 	const handleLogout = () => {
+		handleMenuToggle();
 		userService.signout();
 		dispatch(userActions.removeUser());
 	};
 
 	return (
 		<div className='relative'>
-			<BsList onClick={handleMenuToggle} className='w-8 h-8' />
+			<BsList onClick={handleMenuToggle} className='w-8 h-8 cursor-pointer' />
 			<ul
 				onClick={handleMenuToggle}
-				className={`absolute w-40 gap-y-4 rounded-lg backdrop-blur-md flex flex-col items-center justify-center top-20 -right-60 duration-150 bg-purple-900 bg-opacity-20 p-4 ${
+				className={`absolute w-40 gap-y-4 rounded-lg backdrop-blur-md flex flex-col items-center justify-center top-20 -right-60 duration-150 z-10 bg-purple-900 bg-opacity-20 p-4 ${
 					isMenuOpen && 'right-0'
 				}`}>
 				{mobileLinks}

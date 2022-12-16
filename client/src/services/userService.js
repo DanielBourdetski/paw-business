@@ -49,6 +49,11 @@ export const addToCart = async (id, amount = 1) => {
   return res.data;
 }
 
+/**
+ * @param { ('add' | 'reduce') } action
+ * @param { string } id product id
+ * 
+ *  */
 export const addOrReduceInCart = async (action, id) => {
   const res = await http.put(`/users/add-or-reduce-in-cart/${action}/${id}`);
   return res.data;
@@ -62,6 +67,10 @@ export const removeFromCart = async id => {
 export const getFullCartInfo = async () => {
   const res = await http.get('/users/cart-info');
   return res.data;
+}
+
+export const payForCart = async (paymentInfo) => {
+  const res = await http.post('/payment/pay-for-cart', { paymentInfo })
 }
 
 export const updateAccountInfo = async user => {
@@ -106,6 +115,7 @@ const userService = {
   sendRestLink,
   resetPassword,
   getFullCartInfo,
+  payForCart
 }
 
 export default userService

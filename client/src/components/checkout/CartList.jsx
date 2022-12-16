@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import productService from '../services/productService';
-import userService from '../services/userService';
-import { userActions } from '../store/store';
-import useHandleError from '../hooks/useHandleError';
+import productService from '../../services/productService';
+import userService from '../../services/userService';
+import { userActions } from '../../store/store';
+import useHandleError from '../../hooks/useHandleError';
+import { useNavigate } from 'react-router-dom';
 
 const CartProductCard = ({
 	info: { name, description, image, price, animal, tags, amount, _id },
@@ -41,7 +42,7 @@ const CartProductCard = ({
 
 	const onProductRemove = async () => {
 		try {
-			const deletedProduct = await userService.removeFromCart(_id);
+			await userService.removeFromCart(_id);
 
 			const updatedCart = [...cart];
 			updatedCart.splice(index, 1);
@@ -50,8 +51,6 @@ const CartProductCard = ({
 			handleError(err, 'remove a product from cart');
 		}
 	};
-
-	// TODO organize all cart related components into one folder
 
 	return (
 		<div className='border border-black p-1 m-3'>
@@ -83,7 +82,9 @@ const CartProductCard = ({
 
 const CartList = ({ cart }) => {
 	const [products, setProducts] = useState([]);
+
 	const handleError = useHandleError();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		const fetchFullInfo = async () => {
@@ -114,7 +115,7 @@ const CartList = ({ cart }) => {
 	}, [cart]);
 
 	const onCheckout = () => {
-		console.log('checkout!');
+		navigate('/checkout');
 	};
 
 	const productCards = products.map((p, i) => (

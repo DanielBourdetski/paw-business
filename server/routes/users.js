@@ -147,6 +147,8 @@ router.put('/add-or-reduce-in-cart/:action/:id', auth, async (req, res) => {
   } catch (err) {
     if (err.patch === '_id') return res.status(400).send('Invalid id');
 
+    console.log(err);
+
     res.status(500).send('Unexpeced error');
   }
 })

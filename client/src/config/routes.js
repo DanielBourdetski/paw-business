@@ -7,9 +7,8 @@ import AddProduct from "../pages/AddProduct";
 import Admin from "../pages/Admin";
 import EditUser from "../pages/EditUser";
 import EditProduct from "../pages/EditProduct";
-import Cart from "../pages/Cart";
 import ForgotPassword from "../pages/ForgotPassword";
-import Payment from "../pages/Payment";
+import CartAndCheckout from "../pages/CartAndCheckout";
 import { NavLink } from "react-router-dom";
 
 /**
@@ -89,7 +88,7 @@ const routes = [
   {
     path: '/cart',
     name: 'Cart',
-    element: <Cart />,
+    element: <CartAndCheckout />,
     navable: true,
     protected: true,
     mobile: true
@@ -107,8 +106,8 @@ const routes = [
     element: <ForgotPassword />,
   },
   {
-    path: '/checkout',
-    element: <Payment />,
+    path: '/cart',
+    element: <CartAndCheckout />,
     protected: true
   }
 ]

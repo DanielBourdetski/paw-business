@@ -7,8 +7,6 @@ import { toast } from 'react-toastify';
 const PersonalInfo = ({ paymentState, onPreviousStage, onNextStage }) => {
 	const { paymentInfo, setPaymentInfo } = paymentState;
 
-	console.log(paymentInfo);
-
 	const [error, setError] = useState(null);
 	const [meta, setMeta] = useState(null);
 
@@ -39,7 +37,7 @@ const PersonalInfo = ({ paymentState, onPreviousStage, onNextStage }) => {
 	return (
 		<form
 			onSubmit={onSubmit}
-			className='w-1/4 mx-auto flex flex-col gap-y-4 border rounded p-10 shadow bg-slate-100 min-w-[400px]'>
+			className='md:w-1/4 mx-auto flex flex-col gap-y-4 border rounded p-10 shadow bg-slate-100 md:min-w-[400px]'>
 			<div>
 				<label className='mr-2 font-semibold mt-4 mb-2 ml-2'>Card Owner</label>
 				<input

@@ -12,6 +12,7 @@ import {
 } from 'react-icons/bs';
 import { useState } from 'react';
 import Tags from '../common/Tags';
+import ProductImage from '../common/ProductImage';
 
 const ProductCard = ({ className = '', info, inCart, favorite }) => {
 	const [cartIcon, setCartIcon] = useState(<BsCartCheck />);
@@ -60,30 +61,26 @@ const ProductCard = ({ className = '', info, inCart, favorite }) => {
 		}
 	};
 
-	const onImageError = e => {
-		e.target.onerror = null; // prevents this function to loop
-		e.target.src = process.env.PUBLIC_URL + '/images/Paw-Business-logo.png';
-	};
-
 	const onCartButtonMouseEnter = () => setCartIcon(<BsCartDash />);
 
 	const onCartButtonMouseLeave = () => setCartIcon(<BsCartCheck />);
 
 	return (
 		<li
-			className={`flex md:flex-col border border-gray-400 md:mx-4 md:h-auto py-2 md:px-2 rounded items-start ${className}`}>
-			<img
-				// TODO figure out how to replcae broken image links with defaults
-				className='mx-4 md:pb-4 w-28 md:w-full md:border-b self-center justify-self max-h-[80%] md:max-h-[50%] object-contain'
-				src={info.image}
-				alt={info.name}
-				onError={onImageError}
+			className={`flex md:flex-col border border-gray-400 md:max-h-96 md:mx-4 md:h-auto py-2 md:px-2 rounded items-start object-contain z-0 ${className}`}>
+			<ProductImage
+				url={info.image}
+				name={info.name}
+				className='mx-4 md:pb-4 w-20 md:w-full md:border-b self-center justify-self max-h-[80%] md:max-h-[40%] object-contain'
 			/>
 			<div className='flex flex-col items-center h-full w-full p-3'>
 				<div className='relative w-full flex flex-col justify-between md:flex-none'>
 					<h3 className='font-semibold text-primary -z-10 relative'>
 						{info.name}
 					</h3>
+					<p className='flex md:hidden text-green-900 font-semibold italic'>
+						{info.price} <span>$</span>
+					</p>
 					<p className='text-sm my-2 hidden sm:block'>{info.description}</p>
 				</div>
 
@@ -95,7 +92,7 @@ const ProductCard = ({ className = '', info, inCart, favorite }) => {
 					</div>
 
 					<div className='flex justify-between md:w-full items-center mt-auto'>
-						<div className='self-center justify-self-end justify-center md:justify-start w-full flex mt-auto'>
+						<div className='justify-start w-full flex mt-auto'>
 							<button
 								onClick={() =>
 									inCart ? onRemoveFromCart(info._id) : onAddToCart(info._id)
@@ -117,7 +114,7 @@ const ProductCard = ({ className = '', info, inCart, favorite }) => {
 							</button>
 						</div>
 
-						<p className='text-green-900 font-semibold italic flex'>
+						<p className='text-green-900 font-semibold italic hidden md:flex'>
 							{info.price} <span>$</span>
 						</p>
 					</div>

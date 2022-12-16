@@ -3,8 +3,14 @@ import CheckoutStageIndicator from '../components/checkout/CheckoutStageIndicato
 import CartReview from '../components/checkout/CartReview';
 import PersonalInfo from '../components/checkout/PersonalInfo';
 import FinalSummary from '../components/checkout/FinalSummary';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import userService from '../services/userService';
+import { toast } from 'react-toastify';
+import useHandleError from '../hooks/useHandleError';
+import { useSelector } from 'react-redux';
 
-const Payment = () => {
+const CartAndCheckout = () => {
 	const [productsInCart, setProductsInCart] = useState([]);
 	const [stage, setStage] = useState(1);
 	const [paymentInfo, setPaymentInfo] = useState({
@@ -13,6 +19,37 @@ const Payment = () => {
 		cvc: '007',
 		name: 'Demo Info',
 	});
+
+	const cart = useSelector(state => state.user.cart);
+
+	const navigate = useNavigate();
+	const handleError = useHandleError();
+
+	useEffect(() => {
+		const fetchProducts = async () => {
+			try {
+				const { fullCartInfo, deletedSome } =
+					await userService.getFullCartInfo();
+
+				if (fullCartInfo.length === 0) {
+					navigate('/');
+					return;
+				}
+
+				if (deletedSome)
+					toast.info(
+						'Some products in your cart had invalid info or were removed from the store, and were remove from your cart.',
+						{ autoClose: 3500 }
+					);
+
+				setProductsInCart(fullCartInfo);
+			} catch (err) {
+				handleError(err, 'get product info');
+			}
+		};
+
+		fetchProducts();
+	}, [cart]);
 
 	const onNextStage = () => setStage(stage + 1);
 	const onPreviousStage = () => setStage(stage - 1);
@@ -23,8 +60,8 @@ const Payment = () => {
 		content = (
 			<CartReview
 				productsInCart={productsInCart}
-				setProductsInCart={setProductsInCart}
 				onNextStage={onNextStage}
+				cart={cart}
 			/>
 		);
 
@@ -56,4 +93,4 @@ const Payment = () => {
 	);
 };
 
-export default Payment;
+export default CartAndCheckout;

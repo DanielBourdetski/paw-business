@@ -1,26 +1,33 @@
 const express = require('express');
 const { auth } = require('../middleware/auth');
 const { Product } = require('../models/products');
-const { User } = require('../models/users');
 
 const router = express.Router();
 
 router.post('/pay-for-cart', auth, async (req, res) => {
-  const { cart } = req.user;
-  const { cardDetails } = req.body;
+  try {
+    const { user } = req;
+    const { paymentInfo } = req.body;
 
-  if (!cart?.length) return res.status(400).send('cart is empty, this need to be validated in client');
+    if (!user.cart?.length) return res.status(400).send('cart is empty, this need to be validated in client');
 
-  // validate card and pay for cart items;
+    // banking validation and clearance
 
-  res.send('Payment complete');
-})
+    const ids = user.cart.map(p => p.product);
+    const products = await Product.find({ '_id': { $in: ids } });
+    products.forEach(product => {
+      const { amount: amountJustSold } = user.cart.find(p => p.product.toString() === product._id.toString());
+      product._sold += amountJustSold;
+      product.save();
+    });
 
-router.post('/pay-for-cart', auth, (req, res) => {
-  const { itemId, cardDetails } = req.body;
+    user.cart = [];
+    await user.save();
+    res.send('Payment complete');
+  } catch (err) {
+    res.status(500).send('An unexpected error has occured while trying to complete purchase: ' + err.message);
+  }
 
-  const item = Product.find({_id: itemId});
-  if (!item) return res.status(404).send('no matching item found');
 })
 
 module.exports = router;
