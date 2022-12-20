@@ -8,6 +8,16 @@ const ProductList = ({ products, title = '', className }) => {
 	const capitalizedTitle =
 		title.slice(0, 1).toUpperCase() + title.slice(1).toLowerCase();
 
+	if (!products || !products.length)
+		return (
+			<div className='text-center mb-8'>
+				{capitalizedTitle && (
+					<h2 className='text-3xl italic underline'>{capitalizedTitle}</h2>
+				)}
+				<p>Seems there are no products in this category yet.</p>
+			</div>
+		);
+
 	return (
 		<>
 			{capitalizedTitle && (
