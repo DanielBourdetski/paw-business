@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import ProductCard from './ProductCard';
 
 const ProductList = ({ products, title = '', className }) => {
-	const { cart, favorites = [] } = useSelector(state => state.user);
+	const { cart, favorites = [], isAdmin } = useSelector(state => state.user);
 	const cartIds = cart.map(p => p.product);
 
 	const capitalizedTitle =

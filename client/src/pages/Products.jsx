@@ -7,6 +7,7 @@ import useHandleError from '../hooks/useHandleError';
 import useLoader from '../hooks/useLoader';
 import { BsFilePlus } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
+import NoProductsInStore from '../components/products/NoProductsInStore';
 
 const Products = () => {
 	const [products, setProducts] = useState([]);
@@ -109,6 +110,8 @@ const Products = () => {
 	) : null;
 
 	if (!loaded) return null;
+
+	if (!products || !products.length) return <NoProductsInStore />;
 
 	return (
 		<>
