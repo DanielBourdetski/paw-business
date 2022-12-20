@@ -1,7 +1,7 @@
 import CheckoutProductCard from './CheckoutProduct';
 import QuickSummary from './QuickSummary';
 import useHandleError from '../../hooks/useHandleError';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import userService from '../../services/userService';
 import { userActions } from '../../store/store';
 
@@ -15,14 +15,17 @@ const CartReview = ({ onNextStage, productsInCart, cart }) => {
 				action,
 				id
 			);
-			const productIndexInCart = cart.findIndex(
-				p => p.product === updatedProductInfo.product
-			);
 
-			console.log(updatedProductInfo);
+			const productIndexInCart = cart.findIndex(p => p.product === id);
 
-			const updatedCart = [...cart];
-			updatedCart[productIndexInCart] = updatedProductInfo;
+			let updatedCart;
+
+			if (updatedProductInfo) {
+				updatedCart = [...cart];
+				updatedCart[productIndexInCart] = updatedProductInfo;
+			} else {
+				updatedCart = cart.filter(p => p.product !== id);
+			}
 
 			dispatch(userActions.updateCart(updatedCart));
 		} catch (err) {

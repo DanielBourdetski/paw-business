@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import userService from '../../services/userService';
 import { userActions } from '../../store/store';
 
-const AccountDropdown = ({ userIsAdmin }) => {
+const AccountDropdown = ({ userIsAdmin, closeDropdown }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
@@ -24,11 +24,21 @@ const AccountDropdown = ({ userIsAdmin }) => {
 
 	return (
 		<div className='flex flex-col absolute right-10 top-28 bg-slate-400 bg-opacity-20 backdrop-blur-lg font-semibold rounded p-3 duration-75'>
-			<button className={btnClassNames} onClick={onAccountClick}>
+			<button
+				className={btnClassNames}
+				onClick={() => {
+					onAccountClick();
+					closeDropdown();
+				}}>
 				Account
 			</button>
 			{userIsAdmin && (
-				<button className={btnClassNames} onClick={onAdminClick}>
+				<button
+					className={btnClassNames}
+					onClick={() => {
+						onAdminClick();
+						closeDropdown();
+					}}>
 					Admin Panel
 				</button>
 			)}
@@ -51,9 +61,14 @@ const Account = ({ userIsAdmin }) => {
 			<BsPersonCircle
 				onClick={toggleDropdown}
 				cursor='pointer'
-				className='p-0 w-[40px] h-[40px] ml-auto mr-[15%]'
+				className='p-0 w-[40px] h-[40px] ml-auto mr-6'
 			/>
-			;{dropdownOpen && <AccountDropdown userIsAdmin={userIsAdmin} />}
+			{dropdownOpen && (
+				<AccountDropdown
+					userIsAdmin={userIsAdmin}
+					closeDropdown={() => setDropdownOpen(false)}
+				/>
+			)}
 		</>
 	);
 };

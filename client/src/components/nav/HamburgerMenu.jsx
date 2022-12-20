@@ -30,7 +30,10 @@ const HamburgerMenu = ({ userIsAdmin }) => {
 				{mobileLinks}
 				<li>
 					<button
-						onClick={handleLogout}
+						onClick={() => {
+							handleLogout();
+							setMenuOpen(false);
+						}}
 						className='text-sm border border-slate-500 rounded px-2'>
 						Logout
 					</button>

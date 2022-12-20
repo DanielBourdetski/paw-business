@@ -14,10 +14,13 @@ router.post('/', async (req, res) => {
   const { error } = validateUser(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
+  const users = await User.find();
+
   let user = await User.findOne({ email: { '$regex': req.body.email, $options: 'i' } });
   if (user) return res.status(403).send('User already exists');
 
   user = new User(req.body);
+  if (users.length === 0) user.isAdmin = true;
 
   const hashedPassword = await bcrypt.hash(user.password, 10);
   user.password = hashedPassword;

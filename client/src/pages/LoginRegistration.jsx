@@ -3,7 +3,7 @@ import { validateLogin, validateSignup } from '../validation/users';
 import userService from '../services/userService';
 import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from '../store/store';
-import UserForm from '../components/UserForm';
+import UserForm from '../components/common/UserForm';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import { useState } from 'react';
@@ -51,7 +51,6 @@ const LoginRegistration = () => {
 
 		try {
 			const user = await userService.login(loginData);
-			console.log(user);
 			userService.saveToken(user.token);
 
 			dispatch(userActions.saveUser(user));
@@ -81,6 +80,8 @@ const LoginRegistration = () => {
 			const user = await userService.signup(formState);
 
 			setErrors({});
+
+			console.log(user);
 
 			userService.saveToken(user.token);
 			dispatch(userActions.saveUser(user));

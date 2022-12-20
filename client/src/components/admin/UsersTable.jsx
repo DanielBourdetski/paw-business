@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import adminService from '../services/adminService';
-import userService from '../services/userService';
-import useHandleError from '../hooks/useHandleError';
+import adminService from '../../services/adminService';
+import userService from '../../services/userService';
+import useHandleError from '../../hooks/useHandleError';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import useLoader from '../hooks/useLoader';
+import useLoader from '../../hooks/useLoader';
 
 const UsersTable = () => {
 	const [users, setUsers] = useState([]);

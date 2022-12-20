@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import productService from '../services/productService';
-import useHandleError from '../hooks/useHandleError';
+import productService from '../../services/productService';
+import useHandleError from '../../hooks/useHandleError';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import useLoader from '../hooks/useLoader';
-import Tags from './common/Tags';
+import useLoader from '../../hooks/useLoader';
+import Tags from '../common/Tags';
 
 const ProductsTable = () => {
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
+	console.log(filteredProducts);
 
 	const navigate = useNavigate();
 	const handleError = useHandleError();
@@ -78,22 +79,29 @@ const ProductsTable = () => {
 		const searchTerm = e.target[0].value;
 		if (!searchTerm) return setFilteredProducts(products);
 
+		const regexTerm = new RegExp(searchTerm, 'i');
+
 		const matchingProductsByName = products.filter(p =>
-			p.name.match(new RegExp(searchTerm, 'i'))
+			p.name.match(regexTerm)
 		);
 
 		const matchingProductsByAnimal = products.filter(p =>
-			p.animal.match(new RegExp(searchTerm, 'i'))
+			p.animal.match(regexTerm)
 		);
 
-		const matchingProductsByTags = products.filter(p => {
-			p.tags.includes(new RegExp(searchTerm, 'i'));
-		});
+		const matchingProductsByTags = products.filter(p =>
+			p.tags.some(tag => tag.match(regexTerm))
+		);
+
+		const matchingProductsByDescription = products.filter(p =>
+			p.description.match(regexTerm)
+		);
 
 		const matchingProducts = [
 			...matchingProductsByName,
 			...matchingProductsByAnimal,
 			...matchingProductsByTags,
+			...matchingProductsByDescription,
 		];
 
 		const uniqueMatchingProducts = matchingProducts.filter(

@@ -9,14 +9,17 @@ import EditUser from "../pages/EditUser";
 import EditProduct from "../pages/EditProduct";
 import ForgotPassword from "../pages/ForgotPassword";
 import CartAndCheckout from "../pages/CartAndCheckout";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
+import NotFound from "../pages/NotFound";
+import About from "../pages/About";
 
 /**
  * navable: adds link to nav
  * mobile: adds link to mobile nav
- * name: link name in navbar
+ * name: link name in navbar and/or footer
  * protected: only registered users can access
  * admin: only admins can access
+ * noNav: indicates path is not to be used as link
  */
 
 const routes = [
@@ -31,15 +34,12 @@ const routes = [
   {
     path: '/login',
     element: <LoginRegistration />,
+    name: 'Login'
   },
   {
     path: '/registration',
     element: <LoginRegistration />,
-  },
-  {
-    path: '/products/by-tags/:tag',
-    element: <TagProducts />,
-    protected: true,
+    name: 'Registration'
   },
   {
     path: '/products',
@@ -54,6 +54,7 @@ const routes = [
     name: 'Products',
     element: <Products />,
     protected: true,
+    noNav: true
   },
   {
     path: '/account',
@@ -65,6 +66,7 @@ const routes = [
   {
     path: '/add-product',
     element: <AddProduct />,
+    name: 'Add Product',
     protected: true,
     admin: true,
   },
@@ -73,15 +75,18 @@ const routes = [
     element: <EditProduct />,
     protected: true,
     admin: true,
+    noNav: true,
   },
   {
     path: '/edit-user/:id',
     element: <EditUser />,
     protected: true,
     admin: true,
+    noNav: true
   },
   {
     path: '/update-account',
+    name: 'Update Account',
     element: <EditUser />,
     protected: true
   },
@@ -89,7 +94,6 @@ const routes = [
     path: '/cart',
     name: 'Cart',
     element: <CartAndCheckout />,
-    navable: true,
     protected: true,
     mobile: true
   },
@@ -104,13 +108,34 @@ const routes = [
   {
     path: '/forgot-password/*',
     element: <ForgotPassword />,
+    noNav: true,
   },
   {
-    path: '/cart',
-    element: <CartAndCheckout />,
-    protected: true
+    path: '/about',
+    name: 'About',
+    element: <About />,
+    mobile: true,
+    navable: true
+  },
+  {
+    path: '*',
+    element: <NotFound />,
+    noNav: true
   }
 ]
+
+export const getFooterLinks = (user, isAdmin, className) => {
+  const useableRoutes = routes.filter(r => !r.noNav);
+  let footerRoutes;
+
+
+  if (!user) footerRoutes = useableRoutes.filter(r => !r.protected); 
+  else if (user && !isAdmin) footerRoutes = useableRoutes.filter(r => r.protected && !r.admin);
+  else footerRoutes = useableRoutes.filter(r => r.protected);
+
+  const footerLinks = footerRoutes.map(r => <Link key={r.path} to={r.path} className={className}>{r.name}</Link>)
+  return footerLinks;
+}
 
 export const getMobileNavLinks = userIsAdmin => routes.map(r => {
   if (!r.mobile) return null;

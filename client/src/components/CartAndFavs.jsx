@@ -57,12 +57,22 @@ const CartAndFavs = () => {
 
 	return (
 		<div>
-			{!!cartFullInfo.length && (
+			{cartFullInfo.length ? (
 				<ProductList title='My Cart' products={cartFullInfo} />
+			) : (
+				<div className='text-center mb-4'>
+					<h2 className='text-xl'>My cart</h2>
+					<p>No items in cart</p>
+				</div>
 			)}
 
-			{!!favoritesFullInfo.length && (
+			{favoritesFullInfo.length ? (
 				<ProductList title='Favorites' products={favoritesFullInfo} />
+			) : (
+				<div className='text-center mb-4'>
+					<h2 className='text-xl'>Favorites</h2>
+					<p>No favorites</p>
+				</div>
 			)}
 		</div>
 	);

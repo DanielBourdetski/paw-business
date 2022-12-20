@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import UserForm from '../components/UserForm';
+import UserForm from '../components/common/UserForm';
 import adminService from '../services/adminService';
 import userService from '../services/userService';
 import { userActions } from '../store/store';

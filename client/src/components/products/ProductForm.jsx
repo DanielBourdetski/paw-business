@@ -48,7 +48,7 @@ const ProductForm = ({
 	};
 
 	return (
-		<form className='w-1/2 mx-auto'>
+		<form className='w-3/4 md:w-1/2 mx-auto'>
 			<h2 className='text-center text-2xl m-6'>{title}</h2>
 			<Input
 				value={formState.name}
@@ -81,24 +81,26 @@ const ProductForm = ({
 				invalidMessage={errors.tags}
 			/>
 
-			<select
-				className='p-1 ml-auto rounded border border-gray-600'
-				name='animal'
-				id='animal'
-				defaultValue={allowedAnimals[0]}
-				onChange={e => onChange(e, 'animal')}>
-				{allowedAnimals.map(a => (
-					<option key={a} value={a}>
-						{a}
-					</option>
-				))}
-			</select>
+			<div className='flex justify-evenly mt-4 w-full md:justify-end md:gap-x-4'>
+				<select
+					className='p-1 rounded border border-gray-600'
+					name='animal'
+					id='animal'
+					defaultValue={allowedAnimals[0]}
+					onChange={e => onChange(e, 'animal')}>
+					{allowedAnimals.map(a => (
+						<option key={a} value={a}>
+							{a}
+						</option>
+					))}
+				</select>
 
-			<button
-				className='p-1 border border-gray-600 rounded mx-auto'
-				onClick={handleSubmit}>
-				{title}
-			</button>
+				<button
+					className='p-1 border border-gray-600 rounded'
+					onClick={handleSubmit}>
+					{title}
+				</button>
+			</div>
 		</form>
 	);
 };

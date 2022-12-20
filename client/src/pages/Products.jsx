@@ -5,11 +5,16 @@ import productService from '../services/productService';
 import SearchBar from '../components/common/SearchBar';
 import useHandleError from '../hooks/useHandleError';
 import useLoader from '../hooks/useLoader';
+import { BsFilePlus } from 'react-icons/bs';
+import { useSelector } from 'react-redux';
 
 const Products = () => {
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
+	const [isHovering, setHovering] = useState(false);
 	const [searchTerm, setSearchTerm] = useState('');
+
+	const isAdmin = useSelector(state => state.user.isAdmin);
 
 	const handleError = useHandleError();
 	const navigate = useNavigate();
@@ -83,17 +88,33 @@ const Products = () => {
 
 	const onAddProducts = () => navigate('/add-product');
 
+	const handleMouseEnterIcon = () => setHovering(true);
+
+	const handleMouseLeaveIcon = () => setHovering(false);
+
+	const addProductButton = isAdmin ? (
+		<div
+			onMouseEnter={handleMouseEnterIcon}
+			onMouseLeave={handleMouseLeaveIcon}
+			onClick={onAddProducts}
+			className='fixed z-10 right-10 w-20 h-20 duration-150 bottom-10 cursor-pointer hover:-translate-y-2'>
+			<BsFilePlus className='h-fit w-20 fill-slate-600 hover:fill-primary duration-150' />
+			<p
+				className={`opacity-0 ease-out font-bold whitespace-nowrap ${
+					isHovering && 'opacity-100 ease-in'
+				} text-sm italic duration-300`}>
+				Add product
+			</p>
+		</div>
+	) : null;
+
 	if (!loaded) return null;
 
 	return (
 		<>
 			<SearchBar onSearch={onSearch} />
 			<div className='flex flex-col'>
-				<div className='fixed rounded-full h-20 w-20 border-2 border-black right-10 bottom-10 flex place-content-center'>
-					<button className='text-5xl font-thin' onClick={onAddProducts}>
-						+
-					</button>
-				</div>
+				{addProductButton}
 				{content}
 			</div>
 		</>

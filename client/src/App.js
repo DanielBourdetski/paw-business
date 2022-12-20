@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { userActions } from './store/store';
 import useHandleError from './hooks/useHandleError';
 import useLoader from './hooks/useLoader';
+import Footer from './components/nav/Footer';
 
 function App() {
   const [routes, setRoutes] = useState([])
@@ -32,7 +33,7 @@ function App() {
       if (r.protected) return <Route key={i} path={r.path} element={<ProtectedRoute adminOnly={r.admin}>{r.element}</ProtectedRoute>} />
       
       return <Route key={i} path={r.path} element={r.element} />
-    });
+    },);
     
     setRoutes(routesArr);
 
@@ -54,12 +55,17 @@ function App() {
         dispatch(userActions.saveUser(fetchedUser));
       } 
       catch (err) {
+        if (err.response.status === 401) {
+          toast.info('Logged out, please log in again')
+          localStorage.removeItem('token')
+          return navigate('/login')
+        }
         handleError(err, 'get account info')
       } 
       finally {
-        stopLoading();
+          stopLoading();
+      }
     }
-  }
 
   getAccountInfo();
   }, [])
@@ -67,14 +73,15 @@ function App() {
   return (
     <>
       <ToastContainer position='bottom-right' />
-      <div className='w-screen'>
+      <div className='w-screen flex flex-col min-h-screen'>
         <Header isLogged={!!user} />
         <Loader className={loaderClassName} />
-        <div className='w-[85%] mx-auto'>
+        <div className='w-[85%] mx-auto mb-4'>
         {isInitialLoaded && <Routes>
           {routes}
         </Routes>}
         </div>
+      <Footer isAdmin={user.isAdmin} user={!!user.name} />
       </div>
     </>
   );

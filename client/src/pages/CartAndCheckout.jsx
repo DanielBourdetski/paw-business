@@ -9,10 +9,12 @@ import userService from '../services/userService';
 import { toast } from 'react-toastify';
 import useHandleError from '../hooks/useHandleError';
 import { useSelector } from 'react-redux';
+import CartIsEmpty from '../components/checkout/CartIsEmpty';
 
 const CartAndCheckout = () => {
 	const [productsInCart, setProductsInCart] = useState([]);
 	const [stage, setStage] = useState(1);
+	const [isCartEmpty, setCartEmpty] = useState(false);
 	const [paymentInfo, setPaymentInfo] = useState({
 		cardNumber: '5555 5555 5555 4444',
 		expiryDate: '12 / 24',
@@ -22,7 +24,6 @@ const CartAndCheckout = () => {
 
 	const cart = useSelector(state => state.user.cart);
 
-	const navigate = useNavigate();
 	const handleError = useHandleError();
 
 	useEffect(() => {
@@ -32,8 +33,7 @@ const CartAndCheckout = () => {
 					await userService.getFullCartInfo();
 
 				if (fullCartInfo.length === 0) {
-					navigate('/');
-					return;
+					return setCartEmpty(true);
 				}
 
 				if (deletedSome)
@@ -83,6 +83,8 @@ const CartAndCheckout = () => {
 				paymentInfo={paymentInfo}
 			/>
 		);
+
+	if (isCartEmpty) return <CartIsEmpty />;
 
 	return (
 		<div>

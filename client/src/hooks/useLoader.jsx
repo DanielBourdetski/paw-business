@@ -4,7 +4,7 @@ import { generalActions } from '../store/store';
 
 const useLoader = () => {
 	const [isInitialLoaded, setInitialLoaded] = useState(false); // used only by App.jsx until routes have rendered
-	const [loaded, setLoaded] = useState(false);
+	const [loaded, setLoaded] = useState(true);
 
 	const dispatch = useDispatch();
 

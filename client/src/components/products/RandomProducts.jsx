@@ -6,10 +6,9 @@ import useHandleError from '../../hooks/useHandleError';
 import useLoader from '../../hooks/useLoader';
 
 const getRandomIndex = limit => Math.floor(Math.random() * (limit - 0.5));
-const defaultNumberOfProducts = 4;
+const defaultNumberOfProducts = 8;
 
 const RandomProducts = () => {
-	const [loading, setLoading] = useState(true);
 	const [products, setProducts] = useState([]);
 
 	const handleError = useHandleError();
@@ -23,7 +22,6 @@ const RandomProducts = () => {
 
 				if (allProducts.length < defaultNumberOfProducts) {
 					setProducts(allProducts);
-					setLoading(false);
 					return;
 				}
 
@@ -40,7 +38,6 @@ const RandomProducts = () => {
 					randomProducts.push(allProducts[randomIndex]);
 				}
 				setProducts(randomProducts);
-				setLoading(false);
 			} catch (err) {
 				handleError(err, 'get popular products');
 			} finally {
@@ -53,12 +50,7 @@ const RandomProducts = () => {
 
 	if (!loaded) return null;
 
-	return (
-		<>
-			<h2>Recommended</h2>
-			<ProductList products={products} />;
-		</>
-	);
+	return <ProductList products={products} title='Recommended' />;
 };
 
 export default RandomProducts;

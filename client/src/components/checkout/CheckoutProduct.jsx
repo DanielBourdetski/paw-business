@@ -4,7 +4,7 @@ import { AiFillMinusCircle, AiFillPlusCircle } from 'react-icons/ai';
 const CheckoutProductCard = ({ product, onProductAmountChange }) => {
 	return (
 		<li className='flex items-center justify-between border border-gray-400 rounded px-6 min-h-[150px]'>
-			<div className='w-1/4'>
+			<div className='w-1/4 mr-2'>
 				<ProductImage
 					url={product.image}
 					name={product.name}
@@ -13,7 +13,7 @@ const CheckoutProductCard = ({ product, onProductAmountChange }) => {
 			</div>
 			<div className='flex flex-col md:justify-evenly md:h-full w-3/4 ml-auto'>
 				<div className='flex justify-center mb-4 items-baseline'>
-					<h3 className='text-lg mr-1 w-1/2 md:w-full truncate'>
+					<h3 className='text-lg text-center mr-1 w-1/2 md:w-full truncate'>
 						{product.name}
 					</h3>
 					<p className='text-sm text-gray-600 flex'>

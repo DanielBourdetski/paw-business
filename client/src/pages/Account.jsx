@@ -32,7 +32,7 @@ const Account = () => {
 
 	// TODO continue this
 	return (
-		<div>
+		<div className='min-h-[50vh]'>
 			<h1 className='text-3xl text-center'>My Account</h1>
 			<h2 className='text-xl text-center'>Hello, {accountInfo.name}</h2>
 			<div className='flex gap-x-1 mt-2'>

@@ -1,17 +1,21 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const ProtectedRoute = ({ children = false, adminOnly = false }) => {
 	const navigate = useNavigate();
-	const user = useSelector(state => state.user);
+	const { name, isAdmin } = useSelector(state => state.user);
 
 	useEffect(() => {
-		if (!user.name) navigate('/login');
-		if (adminOnly && !user.isAdmin) navigate('/');
-	}, [user]);
+		if (!name) navigate('/login');
+		if (adminOnly && !isAdmin) {
+			toast.info('You are not authorized to view requested content');
+			navigate('/');
+		}
+	}, [name, isAdmin]);
 
-	if (!user) return null;
+	if (!name) return null;
 
 	return children;
 };

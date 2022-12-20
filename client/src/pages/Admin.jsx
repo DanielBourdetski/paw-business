@@ -1,5 +1,5 @@
-import ProductsTable from '../components/ProductsTable';
-import UsersTable from '../components/UsersTable';
+import ProductsTable from '../components/admin/ProductsTable';
+import UsersTable from '../components/admin/UsersTable';
 
 const Admin = () => {
 	return (

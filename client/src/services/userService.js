@@ -18,8 +18,8 @@ export const login = async data => {
 export const signup = async data => {
     const res = await http.post('users', data)
 
-    const { name, email, cart, token } = res.data;
-    const user = { name, email, cart, token };
+    const { name, email, cart, favorites, isAdmin, token } = res.data;
+    const user = { name, email, cart, favorites, isAdmin, token };
 
     http.setJwt(token);
     return user;
