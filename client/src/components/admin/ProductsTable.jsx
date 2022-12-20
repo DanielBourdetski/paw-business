@@ -6,11 +6,11 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import useLoader from '../../hooks/useLoader';
 import Tags from '../common/Tags';
+import ProductTableMobile from './ProductsTableMobile';
 
 const ProductsTable = () => {
 	const [products, setProducts] = useState([]);
 	const [filteredProducts, setFilteredProducts] = useState([]);
-	console.log(filteredProducts);
 
 	const navigate = useNavigate();
 	const handleError = useHandleError();
@@ -122,7 +122,12 @@ const ProductsTable = () => {
 					className='border border-black mx-20 my-5 p-1 pl-4 rounded'
 				/>
 			</form>
-			<table className='w-[95%] mx-auto table-auto text-sm text-center border-separate border border-slate-500'>
+			<ProductTableMobile
+				products={filteredProducts}
+				onEditProduct={onEditProduct}
+				onDeleteProduct={onDeleteProduct}
+			/>
+			{/* <table className='w-[95%] mx-auto table-auto text-sm text-center border-separate border border-slate-500'>
 				<thead>
 					<tr>
 						<th className='border border-slate-400 '>Product</th>
@@ -158,7 +163,7 @@ const ProductsTable = () => {
 						);
 					})}
 				</tbody>
-			</table>
+			</table> */}
 		</>
 	);
 };

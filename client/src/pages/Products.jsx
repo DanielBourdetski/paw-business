@@ -98,7 +98,7 @@ const Products = () => {
 			onMouseEnter={handleMouseEnterIcon}
 			onMouseLeave={handleMouseLeaveIcon}
 			onClick={onAddProducts}
-			className='fixed z-10 right-10 w-20 h-20 duration-150 bottom-10 cursor-pointer hover:-translate-y-2'>
+			className='fixed z-10 right-10 w-20 h-20 duration-150 bottom-40 md:bottom-10 cursor-pointer hover:-translate-y-2'>
 			<BsFilePlus className='h-fit w-20 fill-slate-600 hover:fill-primary duration-150' />
 			<p
 				className={`opacity-0 ease-out font-bold whitespace-nowrap ${
