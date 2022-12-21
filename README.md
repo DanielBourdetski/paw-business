@@ -5,7 +5,7 @@ Built using nodejs, express as backend using mongoDB and mongoose for database, 
 
 ## Server Starter
 
-1. make sure you have the MongoDB kit installed
+1. make sure you have the MongoDB kit and Python 3+ installed
 2. in /server, run `npm i`
 3. run `npm start`
 
