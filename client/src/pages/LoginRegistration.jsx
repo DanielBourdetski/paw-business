@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import useHandleError from '../hooks/useHandleError';
+import { Name } from '../components/common/Logos';
 
 const LoginRegistration = () => {
 	const [errors, setErrors] = useState({});
@@ -103,7 +104,10 @@ const LoginRegistration = () => {
 	const title = type === 'login' ? 'Login' : 'Signup';
 
 	return (
-		<div className='flex flex-col justify-center'>
+		<div className='flex flex-col justify-center items-center'>
+			<div className='w-4/5 mt-10'>
+				<Name className='mx-auto' />
+			</div>
 			<UserForm
 				onSubmit={handleSubmit}
 				title={title}
