@@ -1,10 +1,10 @@
 import ProductsTable from '../components/admin/ProductsTable';
-import UsersTable from '../components/admin/UsersTable';
+import UsersInfo from '../components/admin/UsersInfo';
 
 const Admin = () => {
 	return (
 		<>
-			<UsersTable />
+			<UsersInfo />
 			<hr className='my-3' />
 			<ProductsTable />
 		</>

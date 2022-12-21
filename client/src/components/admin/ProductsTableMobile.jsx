@@ -2,9 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { VscOpenPreview } from 'react-icons/vsc';
 import { GrClose } from 'react-icons/gr';
-import { RemoveScrollBar } from 'react-remove-scroll-bar';
 import ProductImage from '../common/ProductImage';
 import Tags from '../common/Tags';
+import Modal from '../common/Modal';
 
 const ProductCard = ({
 	product,
@@ -29,11 +29,10 @@ const ProductCard = ({
 	}, [closeInfo]);
 
 	return (
-		<div className='absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center'>
-			<RemoveScrollBar />
+		<Modal>
 			<div
 				ref={ref}
-				className='w-2/3 h-1/2 bg-white flex flex-col items-center p-10 gap-y-6 relative'>
+				className='w-2/3 bg-white flex flex-col items-center p-10 gap-y-4 relative'>
 				<div className='w-full flex items-end justify-between'>
 					<h2 className='text-xl'>{product.name}</h2>
 					<p>{product.price} $</p>
@@ -50,18 +49,18 @@ const ProductCard = ({
 
 				<div className='flex justify-center gap-x-4 w-full'>
 					<AiOutlineEdit
-						className='w-6 h-6'
+						className='w-6 h-6 cursor-pointer rounded-full hover:bg-slate-200'
 						onClick={() => onEditProduct(product._id)}
 					/>
 					<AiOutlineDelete
-						className='w-6 h-6'
+						className='w-6 h-6 cursor-pointer rounded-full hover:bg-slate-200'
 						onClick={() => onDeleteProduct(product._id)}
 					/>
 				</div>
 
-				<GrClose className='absolute top-5 right-5' />
+				<GrClose onClick={closeInfo} className='absolute top-5 right-5' />
 			</div>
-		</div>
+		</Modal>
 	);
 };
 
@@ -76,7 +75,7 @@ const ProductTableMobile = ({
 	const handleCloseInfo = () => setProductCard(null);
 
 	return (
-		<div className=''>
+		<div className='md:hidden'>
 			{productCard && (
 				<ProductCard
 					product={productCard}
@@ -110,11 +109,11 @@ const ProductTableMobile = ({
 								<td className='border'>
 									<div className='flex justify-evenly'>
 										<AiOutlineEdit
-											className='w-5 h-5'
+											className='w-5 h-5 cursor-pointer rounded-full hover:bg-slate-200'
 											onClick={() => onEditProduct(p._id)}
 										/>
 										<AiOutlineDelete
-											className='w-5 h-5'
+											className='w-5 h-5 cursor-pointer rounded-full hover:bg-slate-200'
 											onClick={() => onDeleteProduct(p._id)}
 										/>
 									</div>

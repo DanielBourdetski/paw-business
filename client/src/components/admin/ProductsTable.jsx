@@ -127,7 +127,7 @@ const ProductsTable = () => {
 				onEditProduct={onEditProduct}
 				onDeleteProduct={onDeleteProduct}
 			/>
-			{/* <table className='w-[95%] mx-auto table-auto text-sm text-center border-separate border border-slate-500'>
+			<table className='w-[95%] mx-auto table-auto text-sm text-center border-separate border border-slate-500 hidden md:block'>
 				<thead>
 					<tr>
 						<th className='border border-slate-400 '>Product</th>
@@ -163,7 +163,7 @@ const ProductsTable = () => {
 						);
 					})}
 				</tbody>
-			</table> */}
+			</table>
 		</>
 	);
 };

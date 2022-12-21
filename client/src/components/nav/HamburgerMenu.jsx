@@ -13,6 +13,9 @@ const HamburgerMenu = ({ userIsAdmin }) => {
 	const mobileLinks = getMobileNavLinks(userIsAdmin);
 
 	const handleMenuToggle = () => setMenuOpen(!isMenuOpen);
+
+	console.log(isMenuOpen);
+
 	const handleLogout = () => {
 		handleMenuToggle();
 		userService.signout();
@@ -25,7 +28,7 @@ const HamburgerMenu = ({ userIsAdmin }) => {
 			<ul
 				onClick={handleMenuToggle}
 				className={`absolute w-40 gap-y-4 rounded-lg backdrop-blur-md flex flex-col items-center justify-center top-20 -right-60 duration-150 z-10 bg-purple-900 bg-opacity-20 p-4 ${
-					isMenuOpen && 'right-0'
+					isMenuOpen && 'right-1'
 				}`}>
 				{mobileLinks}
 				<li>
