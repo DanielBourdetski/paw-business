@@ -104,7 +104,7 @@ const LoginRegistration = () => {
 	const title = type === 'login' ? 'Login' : 'Signup';
 
 	return (
-		<div className='flex flex-col justify-center items-center'>
+		<div className='flex flex-col justify-center items-center md:w-2/3 mx-auto'>
 			<div className='w-4/5 mt-10'>
 				<Name className='mx-auto' />
 			</div>
