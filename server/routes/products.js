@@ -1,16 +1,18 @@
 const express = require('express');
 const router = express.Router();
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const _ = require('lodash');
 
 const { Product, validateProduct } = require('../models/products');
-const { auth } = require('../middleware/auth');
+const { auth, authAdmin } = require('../middleware/auth');
 const { allowedAnimals } = require('../config/config');
+const { User } = require('../models/users');
 
 const handleErrors = (err, res) => {
   if (err.name === 'CastError') return res.status(406).send('Invlaid product ID')
 
-  res.status(500).send(err.message);
+  res?.status(500).send(err.message);
 }
 
 router.get('/', auth, async (_, res) => {
@@ -166,12 +168,32 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 router.delete('/:id', auth, async (req, res) => {
+  const id = req.params.id
   try {
-    const product = await Product.findOneAndDelete({ _id: req.params.id });
+    const product = await Product.findOneAndDelete({ _id: id });
     if (!product) return res.status(404).send('Product cannot be found');
-  
+    
+    await User.bulkWrite([
+      {updateMany: {filter: {}, update: { $pull: {cart: {product: new ObjectId(id)} }}}},
+      {updateMany: {filter: {}, update: { $pull: {favorites: new ObjectId(id) }}}}
+    ])
+
     res.send(product)
   } catch (err) {
+    console.log(err);
+    handleErrors(err, res);
+  }
+})
+
+router.post('/add-filler-products', authAdmin, async (req, res) => {
+  try {
+    const products = req.body;
+  
+    const insertedProducts = await Product.insertMany(products);
+  
+    res.send('ok');
+  } catch (err) {
+    console.log(err);
     handleErrors(err);
   }
 })

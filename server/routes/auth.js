@@ -31,7 +31,8 @@ router.post('/request-password-reset-link', async (req, res) => {
     // ! NOTICE - for the purposes of this demo application, an email will be send to every email provided as a proof of concept,
     // !          but a rest link will only be attached for registered users.
     const user = await User.findOne({ email: { '$regex': email, $options: 'i' }});
-    // ? vvv   this line should be uncommented on a real server   vvv
+    
+    // ? this line should be uncommented on a real server   vvv
     // if (!user) return res.status(404).send('No user with matching email found');
 
     if (user) {

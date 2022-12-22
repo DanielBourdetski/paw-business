@@ -11,7 +11,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 2,
-    maxlength: 30
+    maxlength: 50
   },
   description: {
     type: String,
@@ -49,7 +49,6 @@ const productSchema = new mongoose.Schema({
 
 productSchema.pre('save', function(next) {
   this.price = +(this.price.toFixed(1))
-  console.log(this);
   next()
 })
 
@@ -57,7 +56,7 @@ const Product = mongoose.model('Product', productSchema);
 
 const validateProduct = product => {
   const schema = joi.object({
-    name: joi.string().min(2).max(30).required(),
+    name: joi.string().min(2).max(50).required(),
     description: joi.string().min(5).max(120).required(),
     price: joi.number().required(),
     image: joi.string().required(),

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { allowedAnimals: [], loaderClassName: '' };
+const initialState = { allowedAnimals: [], loaderClassName: '', promptClosed: false };
 
 const generalSlice = createSlice({
   name: 'general',
@@ -23,6 +23,11 @@ const generalSlice = createSlice({
 
     hideLoader: state => {      
       state.loaderClassName = 'hidden -z-50';
+      return state;
+    },
+    
+    closePrompt: state => {
+      state.promptClosed = true;
       return state;
     }
   }

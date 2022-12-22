@@ -98,6 +98,11 @@ export const purchase = async () => {
   return res.data;
 }
 
+export const sendRandomProducts = async products => {
+  const res = await http.post('/products/add-filler-products', products);
+  return res.data;
+}
+
 const userService = {
   getAllUsers,
   login,

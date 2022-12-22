@@ -11,7 +11,7 @@ const auth = require('./routes/auth')
 const app = express();
 const PORT = 3001
 
-mongoose.connect('mongodb://localhost/paw-business')
+mongoose.connect('mongodb://0.0.0.0/paw-business')
   .then(() => console.log('connected to mongo'))
   .catch(err => console.log(err))
 
