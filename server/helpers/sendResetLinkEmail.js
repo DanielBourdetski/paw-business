@@ -5,7 +5,7 @@ const sendResetLink = (to, token) => {
     from: 'support@PawBusiness.com',
     to,
     subject: 'Your password reset link',
-    text: `Here is your reset link: http://localhost:3000/forgot-password/${token} - please notice it expires after 24 hours`
+    text: `Here is your reset link: http://localhost:3000/forgot-password/${token} - please note it expires after 24 hours`
   }
 
   sendTextEmail(message);
