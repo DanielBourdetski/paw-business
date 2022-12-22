@@ -2,6 +2,7 @@ import joi from 'joi';
 
 const passwordRegex = /(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}/;
 const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+const fullNameRegex = /^[a-z ,.'-]+$/i
 
 export const validateLogin = user => {
   const schema = joi.object({
@@ -61,3 +62,13 @@ export const validateEmail = email => {
   
   return schema.validate({ email });
 }
+
+export const validateFullName = name => {
+  const schema = joi.object({
+    name: joi.string().pattern(/^([\p{L}]{3,})+\s+([\p{L}\s]{3,})+$/iu).required().messages({
+      'string.pattern.base': 'Invalid name. Full name is required'
+    })
+  });
+
+  return schema.validate({ name });
+};

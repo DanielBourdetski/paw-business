@@ -130,8 +130,8 @@ export const getFooterLinks = (user, isAdmin, className) => {
 
 
   if (!user) footerRoutes = useableRoutes.filter(r => !r.protected); 
-  else if (user && !isAdmin) footerRoutes = useableRoutes.filter(r => r.protected && !r.admin);
-  else footerRoutes = useableRoutes.filter(r => r.protected);
+  else if (user && !isAdmin) footerRoutes = useableRoutes.filter(r => (r.protected || r.navable) && !r.admin);
+  else footerRoutes = useableRoutes.filter(r => r.protected || r.navable);
 
   const footerLinks = footerRoutes.map(r => <Link key={r.path} to={r.path} className={className}>{r.name}</Link>)
   return footerLinks;
