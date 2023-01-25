@@ -14,15 +14,19 @@ In the backend, it uses express for routing and middleware, joi for data validat
 ### Installing
 
 1. Clone the repository
+
 `git clone https://github.com/DanielBourdetski/paw-business.git`
 
 2. Install the dependencies in both folders (frontend and backend)
+
 `npm install`
 
 3. Start the backend server in the server folder
+
 `npm start`
 
 4. Start the frontend server in the client folder
+
 `npm start`
 
 5. The application will be running on http://localhost:3000 for the frontend and on http://localhost:3001 for the backend.
