@@ -21,12 +21,8 @@ In the backend, it uses express for routing and middleware, joi for data validat
 
 `npm install`
 
-3. Start the backend server in the server folder
+3. In each folder (server and client) start the applications
 
 `npm start`
 
-4. Start the frontend server in the client folder
-
-`npm start`
-
-5. The application will be running on http://localhost:3000 for the frontend and on http://localhost:3001 for the backend.
+4. The application will be running on http://localhost:3000 for the frontend and on http://localhost:3001 for the backend.
